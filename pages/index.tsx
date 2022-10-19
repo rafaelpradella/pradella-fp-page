@@ -14,6 +14,14 @@ const Home: NextPage = () => {
           <h2>Fill the Form &rarr;</h2>
           <p>Explore fp-ts features using a form example</p>
         </a>
+        <a href="/list" className={styles.card}>
+          <h2>Fetch some lists &rarr;</h2>
+          <p>Using some advanced types from fp-ts</p>
+        </a>
+        <a href="/video" className={styles.card}>
+          <h2>Watch a nice video &rarr;</h2>
+          <p>Wanna a break from learning FP? This is the place!</p>
+        </a>
       </div>
     </Layout>
   )
