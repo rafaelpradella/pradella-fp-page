@@ -1,5 +1,12 @@
 html,
 body {
+  --radius: 12px;
+  --error-rgb: 178, 34, 34;
+  --error-color: rgb(var(--error-rgb));
+  --accent-rgb: 0, 112, 243;
+  --accent-color: rgb(var(--accent-rgb));
+
+  --pointy-serif: 'DM Serif Display', serif;
   padding: 0;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
