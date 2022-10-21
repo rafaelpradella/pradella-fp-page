@@ -17,7 +17,7 @@ const getValidatorKeys = (validators: ValidatorType): Array<string> => {
 };
 
 const hasAllRequiredBeenFilled = (keys: Array<string>, formData: any) => keys.every(key => 
-    formData.some((matrix) => matrix[0] === key && !!matrix[1]));
+    formData.some((matrix: any) => matrix[0] === key && !!matrix[1]));
 
 const isFieldRequired = (fieldId: string, keys: Array<string>) => 
     keys.some(key => key === fieldId);
@@ -29,7 +29,7 @@ const errorsOnRequiredFields = (validators: ValidatorType, formData: any): Error
 
         if(!isFieldRequired(fieldId, validatorKeys)) return acc;
 
-        const checkValidity = validators[fieldId]?.(fieldValue);
+        const checkValidity = validators[fieldId](fieldValue);
 
         if(isRight(checkValidity)) return acc;
         

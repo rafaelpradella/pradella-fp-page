@@ -1,17 +1,16 @@
-import { SyntheticEvent, useState, createContext, useContext } from "react";
+import { SyntheticEvent, useState, createContext, useContext, HTMLAttributes } from "react";
 import * as E from "fp-ts/lib/Either";
 
 import styles from '../styles/field.module.scss';
 
 type InputValue = string | boolean | null;
+export type ValidatorType = { ['string']: () => E.Either<unknown, string> }[] | [];
 
-interface Props extends Partial<HTMLInputElement> {
+type Props = {
     fieldId: string,
     label: string,
     isRequired?: boolean,
-}
-
-export type ValidatorType = { ['string']: () => E.Either<unknown, string> }[] | [];
+} & HTMLAttributes<HTMLInputElement>
 
 export const FormContext = createContext<ValidatorType>([]);
 
@@ -37,7 +36,7 @@ export default function Field({ fieldId, label, isRequired = false, ...props }: 
     const displayAllErrors = (errList: E.Either<string[], string>): string => {
         console.log(errList);
         return E.match(
-            (errList) => errList.reduce((acc, err) => 
+            (errList: string[]) => errList.reduce((acc, err) => 
                 acc += ` ${err}; `
             , ''),
             () => '',
