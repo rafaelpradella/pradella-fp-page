@@ -5,45 +5,66 @@ import * as A from 'fp-ts/Array';
 import { SyntheticEvent } from "react";
 import { isRight } from "fp-ts/lib/Either";
 
-type FormEvent = SyntheticEvent<HTMLFormElement>;
+import type { ValidatorType } from '../components/Field';
 
+type FormEvent = SyntheticEvent<HTMLFormElement>;
+type ErrorsList = Array<{ fieldId: string, message: string }>;
+
+// IMPERATIVE VERSION USING FUNCTIONAL HELPERS
 const getFormData = (e: FormEvent): any => {
     if(!e?.currentTarget) return null;
     const formData = new FormData(e?.currentTarget);
     return [...formData.entries()];
 };
 
-// IMPERATIVE VERSION USING FUNCTIONAL HELPERS
+const getValidatorKeys = (validators: ValidatorType): string[] => {
+    return Object.keys(validators);
+};
 
-export const handleSubmit = (e: FormEvent, requiredValidators: any) => {
-    e.preventDefault();
-    
-    const validatorKeys = Object.keys(requiredValidators);
-    const formMatrix: Array<string> = getFormData(e);
-    const defaultError = 'Please fill all required fields'; 
+const hasAllRequiredBeenFilled = (keys: string[], formData: any) => keys.every(key => 
+    formData.some((matrix) => matrix[0] === key && !!matrix[1]));
 
-    const checkIfFilledAllRequired = validatorKeys.every(key => {
-        return formMatrix.some(matrix => {
-            return matrix[0] === key && !!matrix[1]
-        })
-    });
+const isFieldRequired = (fieldId: string, keys: string[]) => 
+    keys.some(key => key === fieldId);
 
-    if(!checkIfFilledAllRequired) return alert(defaultError);
-
-    const errorsOnRequiredFields: { fieldId: string, message: string }[] = formMatrix.reduce((acc, field) => {
+const errorsOnRequiredFields = (validators: ValidatorType, formData: any): ErrorsList => formData.reduce(
+    (acc: ErrorsList, field: any) => {
         const [ fieldId, fieldValue ] = field;
-        if(!validatorKeys.some(key => key === fieldId)) return acc;
+        const validatorKeys = getValidatorKeys(validators);
 
-        const checkValidity = requiredValidators[fieldId]?.(fieldValue);
-        console.log(checkValidity);
+        if(!isFieldRequired(fieldId, validatorKeys)) return acc;
+
+        const checkValidity = validators[fieldId]?.(fieldValue);
         if(isRight(checkValidity)) return acc;
         
         acc.push({ fieldId, message: checkValidity.left });
         return acc;
-    }, []);
+}, []);
 
-    console.log('errorsOnRequiredFields', errorsOnRequiredFields);
+const showUserFeedback = (errorsList: ErrorsList) => {
+    if(!errorsList?.length) {
+        alert('Everything is fine, everything is cool 😎');
+        return location.pathname = '';
+    }
 
-    if(errorsOnRequiredFields?.length < 1) return alert('Everything is fine, everything is cool! 😎');
-    errorsOnRequiredFields.forEach(err => alert(`${err.fieldId}: ${err.message}`));
+    return errorsList.forEach(err => alert(`${err.fieldId}: ${err.message}`))
 }
+
+export const handleSubmit = (e: FormEvent, requiredValidators: any): void => {
+    e.preventDefault();
+    
+    const validatorKeys = getValidatorKeys(requiredValidators);
+    const formMatrix: Array<string> = getFormData(e);
+
+    if(!hasAllRequiredBeenFilled(validatorKeys, formMatrix))
+        return alert('Please fill all required fields');
+
+    const errorsList: ErrorsList = errorsOnRequiredFields(requiredValidators, formMatrix);
+    return showUserFeedback(errorsList);
+}
+
+// FUNCTIONAL VERSION USING SEPARATED FN
+
+/*export const handleSubmit = (e: FormEvent, requiredValidators: ValidatorType) => {
+    e.preventDefault();
+}*/

@@ -4,7 +4,7 @@
     align-items: baseline;
     flex-direction: column;
     gap: .5rem;
-    margin: 1.5rem 0 3rem;
+    margin: 1rem 0 2rem;
     min-width: 420px;
 }
 
@@ -41,17 +41,16 @@
     top: 50%;
     left: -2.5rem;
     mix-blend-mode: lighten;
-    font-family: var(--pointy-serif);
     font-size: 1.25rem;
-    font-weight: 800;
-    transform: translateY(-50%);
     opacity: .7;
+    transform: translateY(-50%);
 }
 
 .warnText {
     position: absolute;
+    right: 0;
     bottom: -20px;
     color: var(--error-color);
-    font-size: .8rem;
+    font-size: .7rem;
     font-weight: 800;
 }

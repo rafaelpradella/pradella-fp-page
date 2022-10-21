@@ -1,4 +1,5 @@
 import { SyntheticEvent, useState, createContext, useContext } from "react";
+import * as E from "fp-ts/lib/Either";
 
 import styles from '../styles/field.module.css';
 
@@ -10,19 +11,20 @@ interface Props extends Partial<HTMLInputElement> {
     isRequired?: boolean,
 }
 
-type ValidatorType = { ['string']: Function }[] | [];
+export type ValidatorType = { ['string']: () => E.Either<unknown, string> }[] | [];
 
 export const FormContext = createContext<ValidatorType>([]);
 
 export default function Field({ fieldId, label, isRequired = false, ...props }: Props) {
     const validators = useContext<any>(FormContext);
+    const [hasInteracted, setHasInteracted] = useState<boolean>(false);
     const [data, setData] = useState<InputValue>(null);
 
     const shouldValidateUser = isRequired && validators[fieldId];
-    const isDataValid = validators[fieldId]?.(data);
+    const validatedInput = validators[fieldId]?.(data);
+    const shouldShowFeedback = shouldValidateUser && hasInteracted;
     
-
-    console.log(`isDataValid from ${fieldId}`, isDataValid)
+    console.log(`validatedInput from ${fieldId}`, validatedInput)
 
     const setNewValue = (e: SyntheticEvent<HTMLInputElement>) => {
         const isCheckbox = e.currentTarget.getAttribute('type') === 'checkbox';
@@ -30,10 +32,21 @@ export default function Field({ fieldId, label, isRequired = false, ...props }: 
     }
 
     const RequiredFeedback = () => {
-        const verifierString = isDataValid?.right ? '✅' : '❌';
+        if(!shouldShowFeedback) return null;
+        const verifierString = validatedInput?.right ? '✅' : '❌';
         return (
-            <div className={`${styles.warnSign} ${isDataValid && styles.isPassing}`}>
-                {shouldValidateUser ? verifierString : '⚫️'}
+            <div className={`${styles.warnSign} ${validatedInput && styles.isPassing}`}>
+                {verifierString}
+            </div>
+        )
+    }
+
+    const ErrorMessage = () => {
+        if(!shouldShowFeedback) return null;
+
+        return (
+            <div className={styles.warnText} aria-live="polite">
+                {E.isLeft(validatedInput) ? JSON.stringify(validatedInput) : ''}
             </div>
         )
     }
@@ -44,7 +57,8 @@ export default function Field({ fieldId, label, isRequired = false, ...props }: 
             <div className={styles.inputWrap}>
                 <input
                     {...props}
-                    className={ isDataValid ? 'is-passing' : 'is-failing'}
+                    className={ validatedInput ? 'is-passing' : 'is-failing'}
+                    onBlur={() => !hasInteracted && setHasInteracted(true) }
                     onChange={setNewValue}
                     id={fieldId}
                     name={fieldId}
@@ -52,7 +66,7 @@ export default function Field({ fieldId, label, isRequired = false, ...props }: 
                 />
                 <RequiredFeedback />
             </div>
-            <div className={styles.warnText} aria-live="polite">{shouldValidateUser && JSON.stringify(isDataValid)}</div>
+            <ErrorMessage />
         </div>
     )
 }
