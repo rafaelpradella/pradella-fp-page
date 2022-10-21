@@ -51,7 +51,6 @@
     right: 0;
     top: calc(100% + 8px);
     color: var(--error-color);
-    cursor: help;
     font-size: .7rem;
     font-weight: 800;
     text-align: right;
@@ -61,5 +60,5 @@
 .warnText:not(:hover) {
     overflow: hidden;
     white-space: nowrap;
-    width: 60%;
+    width: 66%;
 }

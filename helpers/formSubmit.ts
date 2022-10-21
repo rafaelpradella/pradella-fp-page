@@ -55,5 +55,8 @@ export const handleSubmit = (e: FormEvent, requiredValidators: any): void => {
         return alert('Please fill all required fields');
 
     const errorsList: ErrorsList = errorsOnRequiredFields(requiredValidators, formMatrix);
-    return alert(getFeedbackString(errorsList));
+    
+    return !errorsList.length 
+        ? e.currentTarget.submit()
+        : alert(getFeedbackString(errorsList));
 }

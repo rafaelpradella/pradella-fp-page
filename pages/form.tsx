@@ -21,6 +21,8 @@ const Form: NextPage = () => {
 
 			<FormContext.Provider value={formValidators}>
 				<form
+					action='/api/fpts-form'
+					method='POST'
 					className={styles.mainForm}
 					onSubmit={(e) => handleSubmit(e, formValidators)}
 				>	
@@ -28,6 +30,7 @@ const Form: NextPage = () => {
 						isRequired
 						type='text'
 						fieldId='formName'
+						placeholder='E.g. John Doe'
 						label='Your Name'
 					/>
 					<Field
@@ -35,6 +38,8 @@ const Form: NextPage = () => {
 						type='password'
 						fieldId='formPassword'
 						label='Password'
+						placeholder='Insert a new password'
+						autocomplete='new-password'
 					/>
 					<Field
 						type='checkbox'
