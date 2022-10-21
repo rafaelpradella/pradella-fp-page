@@ -4,7 +4,7 @@ import { handleSubmit } from '../helpers/formSubmit'
 import { validateName, validatePassword } from '../helpers/validators'
 import Field, { FormContext } from '../components/Field'
 import Layout from '../components/Layout'
-import styles from '../styles/Home.module.css'
+import styles from '../styles/Home.module.scss'
 
 const Form: NextPage = () => {
 
@@ -39,7 +39,7 @@ const Form: NextPage = () => {
 						fieldId='formPassword'
 						label='Password'
 						placeholder='Insert a new password'
-						autocomplete='new-password'
+						autoComplete='new-password'
 					/>
 					<Field
 						type='checkbox'

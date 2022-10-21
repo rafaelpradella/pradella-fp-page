@@ -1,7 +1,7 @@
 import { SyntheticEvent, useState, createContext, useContext } from "react";
 import * as E from "fp-ts/lib/Either";
 
-import styles from '../styles/field.module.css';
+import styles from '../styles/field.module.scss';
 
 type InputValue = string | boolean | null;
 
