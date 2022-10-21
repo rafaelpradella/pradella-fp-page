@@ -21,18 +21,33 @@ export default function Field({ fieldId, label, isRequired = false, ...props }: 
     const [data, setData] = useState<InputValue>(null);
 
     const shouldValidateUser = isRequired && !!validators[fieldId];
-    const validatedInput: E.Either<string, string> = validators[fieldId]?.(data);
+    const validatedInput: E.Either<string[], string> = validators[fieldId]?.(data);
     const shouldShowFeedback = shouldValidateUser && hasInteracted;
-    
-    console.log(`validatedInput from ${fieldId}`, validatedInput)
 
     const setNewValue = (e: SyntheticEvent<HTMLInputElement>) => {
         const isCheckbox = e.currentTarget.getAttribute('type') === 'checkbox';
         return setData(isCheckbox ? e.currentTarget.checked : e.currentTarget.value);
     }
 
+    const validateOnBlur = (e: SyntheticEvent<HTMLInputElement>) => {
+        if(!hasInteracted) setHasInteracted(true);
+        setNewValue(e);
+    }
+
+    const displayAllErrors = (errList: E.Either<string[], string>): string => {
+        console.log(errList);
+        return E.match(
+            (errList) => errList.reduce((acc, err) => 
+                acc += ` ${err}; `
+            , ''),
+            () => '',
+        )(errList);
+    }
+        
+
     const RequiredFeedback = () => {
         if(!shouldShowFeedback) return null;
+
         const verifierString = E.isLeft(validatedInput) ? '❌' : '✅';
         return (
             <div className={`${styles.warnSign} ${validatedInput && styles.isPassing}`}>
@@ -46,7 +61,7 @@ export default function Field({ fieldId, label, isRequired = false, ...props }: 
 
         return (
             <div className={styles.warnText} aria-live="polite">
-                {`${ validatedInput?.left } `}
+                {displayAllErrors(validatedInput)}
             </div>
         )
     }
@@ -58,8 +73,8 @@ export default function Field({ fieldId, label, isRequired = false, ...props }: 
                 <input
                     {...props}
                     className={ validatedInput ? 'is-passing' : 'is-failing'}
-                    onBlur={() => !hasInteracted && setHasInteracted(true) }
-                    onChange={setNewValue}
+                    onBlur={validateOnBlur}
+                    onChange={(e) => hasInteracted && setNewValue(e)}
                     id={fieldId}
                     name={fieldId}
                     required={isRequired}

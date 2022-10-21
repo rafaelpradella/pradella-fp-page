@@ -9,9 +9,9 @@ type ValidationReturn = E.Either<string, string>
 
 const MIN_LENGTH = 6;
 const ERROR_MSG = {
-    NO_CONTENT: 'Where is the data???',
-    LENGTH: 'Need up to 6 characters',
-    CAPITAL_LETTER: 'At Least ONE Capital Letter',
+    NO_CONTENT: 'Fill the field',
+    LENGTH: 'At least 6 characters',
+    CAPITAL_LETTER: 'Include 1 capital letter',
     NUMBER: 'At least 1 number',
 } as const;
 
@@ -27,11 +27,16 @@ const oneCapital = (s: string): ValidationReturn =>
 const oneNumber = (s: string): ValidationReturn =>
     (/[0-9]/g.test(s)) ? E.right(s) : E.left(ERROR_MSG.NUMBER)
 
-export const validateName = (s: string): ValidationReturn => hasContent(s);
+export const validateName = (s: string): E.Either<ReadonlyNonEmptyArray<string>, [string, string, string]> =>
+    pipe(
+        sequenceT(E.getApplicativeValidation(getSemigroup<string>()))(
+            lift(hasContent)(s),
+        )
+    )
 
 export const validatePassword = (s: string): E.Either<ReadonlyNonEmptyArray<string>, [string, string, string]> =>
     pipe(
-        sequenceT(E.getValidation(getSemigroup<string>()))(
+        sequenceT(E.getApplicativeValidation(getSemigroup<string>()))(
             lift(minLenght)(s),
             lift(oneCapital)(s),
             lift(oneNumber)(s),
