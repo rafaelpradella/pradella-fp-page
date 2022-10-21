@@ -39,7 +39,7 @@ const Form: NextPage = () => {
 					<Field
 						type='checkbox'
 						fieldId='formCheckTest'
-						label='I accept being part of the club'
+						label='I accept being part of the FPTS Members™ signature'
 					/>
 					<button
 						className={styles.sendButton}

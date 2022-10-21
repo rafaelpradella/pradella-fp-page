@@ -20,8 +20,8 @@ export default function Field({ fieldId, label, isRequired = false, ...props }: 
     const [hasInteracted, setHasInteracted] = useState<boolean>(false);
     const [data, setData] = useState<InputValue>(null);
 
-    const shouldValidateUser = isRequired && validators[fieldId];
-    const validatedInput = validators[fieldId]?.(data);
+    const shouldValidateUser = isRequired && !!validators[fieldId];
+    const validatedInput: E.Either<string, string> = validators[fieldId]?.(data);
     const shouldShowFeedback = shouldValidateUser && hasInteracted;
     
     console.log(`validatedInput from ${fieldId}`, validatedInput)
@@ -33,7 +33,7 @@ export default function Field({ fieldId, label, isRequired = false, ...props }: 
 
     const RequiredFeedback = () => {
         if(!shouldShowFeedback) return null;
-        const verifierString = validatedInput?.right ? '✅' : '❌';
+        const verifierString = E.isLeft(validatedInput) ? '❌' : '✅';
         return (
             <div className={`${styles.warnSign} ${validatedInput && styles.isPassing}`}>
                 {verifierString}
@@ -46,7 +46,7 @@ export default function Field({ fieldId, label, isRequired = false, ...props }: 
 
         return (
             <div className={styles.warnText} aria-live="polite">
-                {E.isLeft(validatedInput) ? JSON.stringify(validatedInput) : ''}
+                {`${ validatedInput?.left } `}
             </div>
         )
     }

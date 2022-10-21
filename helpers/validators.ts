@@ -1,5 +1,9 @@
 import * as E from 'fp-ts/Either'
 import { pipe } from 'fp-ts/function';
+import { sequenceT } from 'fp-ts/lib/Apply';
+import { getSemigroup, ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray';
+
+import { lift, LiftedEither } from '../helpers/functional';
 
 type ValidationReturn = E.Either<string, string>
 
@@ -12,7 +16,7 @@ const ERROR_MSG = {
 } as const;
 
 const hasContent = (s: string): ValidationReturn =>
-    (s?.length > 0) ? E.right(s) : E.left(ERROR_MSG.NO_CONTENT)
+    (s?.replaceAll(/\s/g,'')?.length > 0) ? E.right(s) : E.left(ERROR_MSG.NO_CONTENT)
 
 const minLenght = (s: string): ValidationReturn =>
     (s?.length > MIN_LENGTH) ? E.right(s) : E.left(ERROR_MSG.LENGTH)
@@ -25,10 +29,12 @@ const oneNumber = (s: string): ValidationReturn =>
 
 export const validateName = (s: string): ValidationReturn => hasContent(s);
 
-export const validatePassword = (s: string): ValidationReturn =>
-    pipe(s,
-        minLenght,
-        E.chain(oneCapital),
-        E.chain(oneNumber),
+export const validatePassword = (s: string): E.Either<ReadonlyNonEmptyArray<string>, [string, string, string]> =>
+    pipe(
+        sequenceT(E.getValidation(getSemigroup<string>()))(
+            lift(minLenght)(s),
+            lift(oneCapital)(s),
+            lift(oneNumber)(s),
+        )
     )
 

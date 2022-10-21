@@ -1,12 +1,7 @@
-import { pipe } from "fp-ts/lib/function";
-import * as E from 'fp-ts/Either'
-import * as RE from 'fp-ts/ReaderEither'
-import * as A from 'fp-ts/Array';
 import { SyntheticEvent } from "react";
 import { isRight } from "fp-ts/lib/Either";
 
 import type { ValidatorType } from '../components/Field';
-import { getOrElse } from "fp-ts/lib/EitherT";
 
 type FormEvent = SyntheticEvent<HTMLFormElement>;
 type ErrorsList = Array<{ fieldId: string, message: string }>;
@@ -46,8 +41,8 @@ const getFeedbackString = (errorsList: ErrorsList): string => {
     if(!errorsList?.length) return 'Everything is fine, everything is cool 😎';
 
     return errorsList?.reduce((acc, err) =>
-        acc += `${err.fieldId}: ${err.message}`
-    , '')
+        acc += `${err.fieldId}: ${err.message} \n`
+    , 'Fix those issues before submitting: \n\n')
 }
 
 export const handleSubmit = (e: FormEvent, requiredValidators: any): void => {
