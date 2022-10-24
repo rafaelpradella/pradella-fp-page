@@ -4,7 +4,7 @@ import * as E from "fp-ts/lib/Either";
 import styles from '../styles/field.module.scss';
 
 type InputValue = string | boolean | null;
-export type ValidatorType = { ['string']: () => E.Either<unknown, string> }[] | [];
+export type ValidatorType = { [key: string]: () => E.Either<string, string> }[];
 
 type Props = {
     fieldId: string,

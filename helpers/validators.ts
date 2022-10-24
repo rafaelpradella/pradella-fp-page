@@ -27,14 +27,14 @@ const oneCapital = (s: string): ValidationReturn =>
 const oneNumber = (s: string): ValidationReturn =>
     (/[0-9]/g.test(s)) ? E.right(s) : E.left(ERROR_MSG.NUMBER)
 
-export const validateName = (s: string): E.Either<ReadonlyNonEmptyArray<string>, [string, string, string]> =>
+export const validateName = (s: string): E.Either<ReadonlyNonEmptyArray<string>, Array<string>> =>
     pipe(
         sequenceT(E.getApplicativeValidation(getSemigroup<string>()))(
             lift(hasContent)(s),
         )
     )
 
-export const validatePassword = (s: string): E.Either<ReadonlyNonEmptyArray<string>, [string, string, string]> =>
+export const validatePassword = (s: string): E.Either<ReadonlyNonEmptyArray<string>, Array<string>> =>
     pipe(
         sequenceT(E.getApplicativeValidation(getSemigroup<string>()))(
             lift(minLenght)(s),

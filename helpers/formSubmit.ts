@@ -4,7 +4,8 @@ import { isRight } from "fp-ts/lib/Either";
 import type { ValidatorType } from '../components/Field';
 
 type FormEvent = SyntheticEvent<HTMLFormElement>;
-type ErrorsList = Array<{ fieldId: string, message: string }>;
+export type FormDataMatrix = [string, string| boolean][];
+export type ErrorsList = Array<{ fieldId: string, message: string }>;
 
 const getFormData = (e: FormEvent): any => {
     if(!e?.currentTarget) return null;
@@ -16,14 +17,14 @@ const getValidatorKeys = (validators: ValidatorType): Array<string> => {
     return Object.keys(validators);
 };
 
-const hasAllRequiredBeenFilled = (keys: Array<string>, formData: any) => keys.every(key => 
-    formData.some((matrix: any) => matrix[0] === key && !!matrix[1]));
+const hasAllRequiredBeenFilled = (keys: Array<string>, formData: FormDataMatrix) => keys.every(key => 
+    formData.some((matrix: FormDataMatrix[0]) => matrix[0] === key && !!matrix[1]));
 
 const isFieldRequired = (fieldId: string, keys: Array<string>) => 
     keys.some(key => key === fieldId);
 
-const errorsOnRequiredFields = (validators: ValidatorType, formData: any): ErrorsList => formData.reduce(
-    (acc: ErrorsList, field: any) => {
+const errorsOnRequiredFields = (validators: ValidatorType, formData: FormDataMatrix): ErrorsList => formData.reduce(
+    (acc: ErrorsList, field: FormDataMatrix[0]) => {
         const [ fieldId, fieldValue ] = field;
         const validatorKeys = getValidatorKeys(validators);
 
@@ -49,7 +50,7 @@ export const handleSubmit = (e: FormEvent, requiredValidators: any): void => {
     e.preventDefault();
     
     const validatorKeys = getValidatorKeys(requiredValidators);
-    const formMatrix: Array<string> = getFormData(e);
+    const formMatrix: FormDataMatrix = getFormData(e);
 
     if(!hasAllRequiredBeenFilled(validatorKeys, formMatrix))
         return alert('Please fill all required fields');
