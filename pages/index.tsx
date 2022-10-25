@@ -17,9 +17,9 @@ const Home: NextPage = () => {
             <p>Explore fp-ts features using a form example</p>
           </a>
         </Link>
-        <Link href="/list" passHref>
+        <Link href="/currency-converter" passHref>
           <a className={styles.card}>
-            <h2>Fetch some lists &rarr;</h2>
+            <h2>Exchange your money &rarr;</h2>
             <p>Using some advanced types from fp-ts</p>
           </a>
         </Link>
