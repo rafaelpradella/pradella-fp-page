@@ -16,7 +16,7 @@ const ERROR_MSG = {
 } as const;
 
 const hasContent = (s: string): ValidationReturn =>
-    (s?.replaceAll(/\s/g,'')?.length > 0) ? E.right(s) : E.left(ERROR_MSG.NO_CONTENT)
+    (s?.replaceAll(/\s/g, '')?.length > 0) ? E.right(s) : E.left(ERROR_MSG.NO_CONTENT)
 
 const minLenght = (s: string): ValidationReturn =>
     (s?.length > MIN_LENGTH) ? E.right(s) : E.left(ERROR_MSG.LENGTH)

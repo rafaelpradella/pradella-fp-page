@@ -29,23 +29,23 @@ export default function Field({ fieldId, label, isRequired = false, ...props }: 
     }
 
     const validateOnBlur = (e: SyntheticEvent<HTMLInputElement>) => {
-        if(!hasInteracted) setHasInteracted(true);
+        if (!hasInteracted) setHasInteracted(true);
         setNewValue(e);
     }
 
     const displayAllErrors = (errList: E.Either<string[], string>): string => {
         console.log(errList);
         return E.match(
-            (errList: string[]) => errList.reduce((acc, err) => 
+            (errList: string[]) => errList.reduce((acc, err) =>
                 acc += ` ${err}; `
-            , ''),
+                , ''),
             () => '',
         )(errList);
     }
-        
+
 
     const RequiredFeedback = () => {
-        if(!shouldShowFeedback) return null;
+        if (!shouldShowFeedback) return null;
 
         const verifierString = E.isLeft(validatedInput) ? '❌' : '✅';
         return (
@@ -56,7 +56,7 @@ export default function Field({ fieldId, label, isRequired = false, ...props }: 
     }
 
     const ErrorMessage = () => {
-        if(!shouldShowFeedback) return null;
+        if (!shouldShowFeedback) return null;
 
         return (
             <div className={styles.warnText} aria-live="polite">
@@ -71,7 +71,7 @@ export default function Field({ fieldId, label, isRequired = false, ...props }: 
             <div className={styles.inputWrap}>
                 <input
                     {...props}
-                    className={ validatedInput ? 'is-passing' : 'is-failing'}
+                    className={validatedInput ? 'is-passing' : 'is-failing'}
                     onBlur={validateOnBlur}
                     onChange={(e) => hasInteracted && setNewValue(e)}
                     id={fieldId}
