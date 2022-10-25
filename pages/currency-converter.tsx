@@ -1,37 +1,20 @@
 import type { NextPage } from 'next'
+import { pipe } from 'fp-ts/lib/function';
+import * as A from 'fp-ts/Array';
 
 import Layout from '../components/Layout'
 import styles from '../styles/Home.module.scss'
 
-const CurrencyConverter: NextPage = ({ symbols, currenciesData }) => {
-
-	const CurrencySelector = () => {
-		return (
-			<select>
-				{symbols?.map((symbol, i) => (
-        			<option value={symbol} key={i}>{`${symbol} - ${currenciesData[symbol]}`}</option>
-      			))}
-			</select>
-		)
-	};
-
-
-	return (
-		<Layout>
-			<h1 className={styles.title}>
-				Simulate currency conversions
-			</h1>
-			<fieldset>
-				<CurrencySelector />
-				<select>
-					
-				</select>
-			</fieldset>
-		</Layout>
-	)
-}
+const TOP_NOTCH_CURRENCIES = ['EUR', 'GBP', 'AUD', 'NZD', 'USD', 'CAD', 'CHF', 'JPY'];
 
 export async function getStaticProps() {
+	
+	const isTopCurrency = (arr) => {
+		return TOP_NOTCH_CURRENCIES.some((topSymbol) => {
+			return topSymbol === arr[0];
+		})
+	};
+
 	let myHeaders = new Headers();
 	myHeaders.append("apikey", process.env.FIXER_API_KEY);
 
@@ -44,12 +27,47 @@ export async function getStaticProps() {
 	const symbolsRequest = await fetch("https://api.apilayer.com/fixer/symbols", requestOptions);
 	const res = await symbolsRequest.json();
 
+	const filterCurrencies = (currencies, predicate) => pipe(currencies,
+			Object.entries,
+			A.partition(predicate)
+	);
+
+	const filteredByImportance = filterCurrencies(res?.symbols, isTopCurrency);
+
 	return {
 	  props: {
-		symbols: Object.keys(res?.symbols),
-		currenciesData: res?.symbols,
+			topCurrencies: filteredByImportance.right,
+			otherCurrencies: filteredByImportance.left,
 	  },
 	}
-  }
+}
 
-export default CurrencyConverter
+export default function CurrencyConverter({ topCurrencies, otherCurrencies }) {
+	const generateOptions = (currencies: Array<[string, string]>) => 
+		currencies.map((currency, i) => (
+			<option value={currency[0]} key={i}>{`${currency[0]} - ${currency[1]}`}</option>
+		)
+	);
+
+	const CurrencySelector = () => {
+		return (
+			<select>
+				<optgroup label='Most exchanged'>
+					{generateOptions(topCurrencies)}
+				</optgroup>
+				{generateOptions(otherCurrencies)}
+			</select>
+		)
+	};
+
+	return (
+		<Layout>
+			<h1 className={styles.title}>
+				Simulate currency conversions
+			</h1>
+			<fieldset>
+				<CurrencySelector />
+			</fieldset>
+		</Layout>
+	)
+}
