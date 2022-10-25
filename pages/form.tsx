@@ -25,7 +25,7 @@ const Form: NextPage = () => {
 					method='POST'
 					className={styles.mainForm}
 					onSubmit={(e) => handleSubmit(e, formValidators)}
-				>	
+				>
 					<Field
 						isRequired
 						type='text'
