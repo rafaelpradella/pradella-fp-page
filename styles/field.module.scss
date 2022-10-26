@@ -10,6 +10,7 @@
   input {
     &:not([type='checkbox']) {
       background-color: rgba(255, 255, 255, .2);
+      box-shadow: var(--shadow-5);
       border-radius: var(--radius);
       border: none;
       color: white;
