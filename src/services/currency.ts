@@ -12,8 +12,8 @@ const TOP_NOTCH_CURRENCIES = ['EUR', 'GBP', 'AUD', 'NZD', 'USD', 'CAD', 'CHF', '
 
 const fixerClient = axios.create({
   baseURL: "https://api.apilayer.com/fixer/",
-  headers: { apiKey: process.env.FIXER_API_KEY},
-  timeout: 2000,
+  headers: { apiKey: process.env.API_LAYER_KEY},
+  timeout: 8000,
 })
 
 const isTopCurrency = (key: string) => {

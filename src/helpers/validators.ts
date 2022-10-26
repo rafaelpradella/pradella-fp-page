@@ -3,7 +3,7 @@ import { pipe } from 'fp-ts/function';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { getSemigroup, ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray';
 
-import { lift, LiftedEither } from '../helpers/functional';
+import { lift, LiftedEither } from './functional';
 
 type ValidationReturn = E.Either<string, string>
 
