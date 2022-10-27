@@ -5,6 +5,7 @@ import * as TE from 'fp-ts/TaskEither';
 import * as A from 'fp-ts/Array';
 
 import CURRENCY_MOCK from './currency.mock';
+import { Separated } from 'fp-ts/lib/Separated';
 
 type CurrencyResponse = { currencies: CurrencyData, success: boolean };
 type CurrencyData = { [key: string] : string };
@@ -20,14 +21,12 @@ const fixerClient = axios.create({
 
 const isTopCurrency = (key: string[]) => {
   return TOP_NOTCH_CURRENCIES.some((topSymbol) => {
-    const currencyKey = key[0];
-    const isSame = topSymbol === currencyKey;
-    isSame && console.log('IS SAME!', topSymbol, currencyKey);
-    return isSame;
+    return topSymbol === key[0];
   });
 };
 
-const listByRelevanceTier = (currencies) =>
+const listByRelevanceTier = (currencies: E.Either<Error, CurrencyData>)
+  : E.Either<Error, Separated<CurrencyMatrix, CurrencyMatrix>> =>
   E.isLeft(currencies)
     ? currencies
     : E.right(
@@ -35,12 +34,11 @@ const listByRelevanceTier = (currencies) =>
     )
 
 const fetchCurrenciesList = async() => {
-  const currencyList: E.Either<Error, CurrencyData> = await pipe(
-    /*TE.tryCatch(
+  const currencyList: E.Either<Error, CurrencyMatrix> = await pipe(
+    TE.tryCatch(
       () => fixerClient.get('/list'),
       (err) => new Error(`${err}`)
-    ),*/
-    TE.right({ data: CURRENCY_MOCK }),
+    ),
     TE.map((res: AxiosResponse<CurrencyResponse>) => res?.data?.currencies),
     TE.map(Object.entries),
   )()
@@ -48,7 +46,7 @@ const fetchCurrenciesList = async() => {
   return currencyList;
 }
 
-const fetchCurrenciesListByRelevance = async(): TE.TaskEither<Error, E.Either<CurrencyData, CurrencyData>> => {
+const fetchCurrenciesListByRelevance = async() => {
   const listData = await fetchCurrenciesList();
   return listByRelevanceTier(listData);
 }
