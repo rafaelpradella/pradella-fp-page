@@ -34,7 +34,6 @@ export default function Field({ fieldId, label, isRequired = false, ...props }: 
     }
 
     const displayAllErrors = (errList: E.Either<string[], string>): string => {
-        console.log(errList);
         return E.match(
             (errList: string[]) => errList.reduce((acc, err) =>
                 acc += ` ${err}; `

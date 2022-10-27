@@ -1,54 +1,56 @@
 import axios, { AxiosResponse } from 'axios';
 import { pipe } from 'fp-ts/lib/function';
-import { isLeft } from 'fp-ts/lib/Either';
+import * as E from 'fp-ts/Either';
 import * as TE from 'fp-ts/TaskEither';
 import * as A from 'fp-ts/Array';
 
-type CurrencyResponse = { symbols: CurrencyData, status: string };
+import CURRENCY_MOCK from './currency.mock';
+
+type CurrencyResponse = { currencies: CurrencyData, success: boolean };
 type CurrencyData = { [key: string] : string };
 type CurrencyMatrix = [string, string][];
 
-const TOP_NOTCH_CURRENCIES = ['EUR', 'GBP', 'AUD', 'NZD', 'USD', 'CAD', 'CHF', 'JPY'] as const;
+const TOP_NOTCH_CURRENCIES = ['EUR', 'GBP', 'AUD', 'NZD', 'USD', 'CAD', 'CHF', 'JPY', 'BTC'] as const;
 
 const fixerClient = axios.create({
-  baseURL: "https://api.apilayer.com/fixer/",
+  baseURL: "https://api.apilayer.com/currency_data",
   headers: { apiKey: process.env.API_LAYER_KEY},
   timeout: 8000,
 })
 
-const isTopCurrency = (key: string) => {
+const isTopCurrency = (key: string[]) => {
   return TOP_NOTCH_CURRENCIES.some((topSymbol) => {
-    return topSymbol === key;
-  })
+    const currencyKey = key[0];
+    const isSame = topSymbol === currencyKey;
+    isSame && console.log('IS SAME!', topSymbol, currencyKey);
+    return isSame;
+  });
 };
 
-const listByRelevanceTier = (currencies, predicate) => pipe(currencies,
-  Object.entries,
-  A.partition(predicate)
-);
+const listByRelevanceTier = (currencies) =>
+  E.isLeft(currencies)
+    ? currencies
+    : E.right(
+      A.partition(isTopCurrency)(currencies?.right)
+    )
 
 const fetchCurrenciesList = async() => {
-  const currencyList: TE.TaskEither<Error, CurrencyData> = await pipe(
-    TE.tryCatch(
-      () => fixerClient.get('symbols'),
+  const currencyList: E.Either<Error, CurrencyData> = await pipe(
+    /*TE.tryCatch(
+      () => fixerClient.get('/list'),
       (err) => new Error(`${err}`)
-    ),
-    TE.map((res: AxiosResponse<CurrencyResponse>) => res.data.symbols),
+    ),*/
+    TE.right({ data: CURRENCY_MOCK }),
+    TE.map((res: AxiosResponse<CurrencyResponse>) => res?.data?.currencies),
+    TE.map(Object.entries),
   )()
 
   return currencyList;
 }
 
-
-const fetchCurrenciesListByRelevance = async() => {
-  const getListData = await fetchCurrenciesList();
-  
-  return pipe(getListData,
-    TE.getOrElse((err) => console.error(err)),
-    TE.chainW(
-      isTopCurrency,
-    ),
-  )
+const fetchCurrenciesListByRelevance = async(): TE.TaskEither<Error, E.Either<CurrencyData, CurrencyData>> => {
+  const listData = await fetchCurrenciesList();
+  return listByRelevanceTier(listData);
 }
 
 const CurrencyService = {
