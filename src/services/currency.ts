@@ -4,20 +4,14 @@ import * as E from 'fp-ts/Either';
 import * as TE from 'fp-ts/TaskEither';
 import * as A from 'fp-ts/Array';
 
-import CURRENCY_MOCK from './currency.mock';
-import { Separated } from 'fp-ts/lib/Separated';
+import fixerClient from './fixer.client';
+//import CURRENCY_MOCK from './currency.mock';
 
-type CurrencyResponse = { currencies: CurrencyData, success: boolean };
-type CurrencyData = { [key: string] : string };
-type CurrencyMatrix = [string, string][];
+export type CurrencyResponse = { currencies: CurrencyData, success: boolean };
+export type CurrencyData = { [key: string] : string };
+export type CurrencyMatrix = [string, string][];
 
 const TOP_NOTCH_CURRENCIES = ['EUR', 'GBP', 'AUD', 'NZD', 'USD', 'CAD', 'CHF', 'JPY', 'BTC'] as const;
-
-const fixerClient = axios.create({
-  baseURL: "https://api.apilayer.com/currency_data",
-  headers: { apiKey: process.env.API_LAYER_KEY},
-  timeout: 8000,
-})
 
 const isTopCurrency = (key: string[]) => {
   return TOP_NOTCH_CURRENCIES.some((topSymbol) => {
@@ -25,13 +19,11 @@ const isTopCurrency = (key: string[]) => {
   });
 };
 
-const listByRelevanceTier = (currencies: E.Either<Error, CurrencyData>)
-  : E.Either<Error, Separated<CurrencyMatrix, CurrencyMatrix>> =>
-  E.isLeft(currencies)
-    ? currencies
-    : E.right(
-      A.partition(isTopCurrency)(currencies?.right)
-    )
+const listByRelevanceTier = (currencies: E.Either<Error, CurrencyMatrix>) => 
+  pipe(
+    currencies,
+    E.map((currencies) => A.partition(isTopCurrency)(currencies)),
+  );
 
 const fetchCurrenciesList = async() => {
   const currencyList: E.Either<Error, CurrencyMatrix> = await pipe(
