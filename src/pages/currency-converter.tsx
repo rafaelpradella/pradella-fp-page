@@ -1,10 +1,14 @@
-import type { AppProps } from 'next/app'
-
-import CurrencyService from 'services/currency';
+import CurrencyService, { CurrencyMatrix } from 'services/currency';
 import Layout from 'components/Layout'
 import styles from 'styles/Home.module.scss'
 import * as E from 'fp-ts/lib/Either';
 import React from 'react';
+
+type Props = {
+	topCurrencies: CurrencyMatrix | null,
+	otherCurrencies: CurrencyMatrix | null,
+	error: string | null,
+}
 
 export async function getStaticProps() {
 	const currencyRes = await CurrencyService.fetchCurrenciesListByRelevance();
@@ -20,13 +24,13 @@ export async function getStaticProps() {
 	}
 }
 
-export default function CurrencyConverter({ topCurrencies, otherCurrencies, error }: AppProps) {
+export default function CurrencyConverter({ topCurrencies, otherCurrencies, error }: Props) {
 
 	console.log('TOP PROP', topCurrencies);
 	console.log('OTHERS PROP', otherCurrencies);
 	console.log('ERROR PROP', error);
 	
-	const generateOptions = (currencies: Array<[string, string]>, optgroup?: string) => {
+	const generateOptions = (currencies: Props['topCurrencies'], optgroup?: string) => {
 		if(!currencies?.length) return null;
 		
 		const OptWrapper = ({children}: { children: React.ReactNode[]}) =>
