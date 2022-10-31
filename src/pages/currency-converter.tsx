@@ -50,8 +50,8 @@ export default function CurrencyConverter({ topCurrencies, otherCurrencies, erro
 
 	const CurrencySelector = () => {
 		return (
-			<select>
-				<option disabled selected value=''> -- Select a currency -- </option>
+			<select defaultValue={'DEFAULT'}>
+				<option disabled value='DEFAULT'> -- Select a currency -- </option>
 				{generateOptions(topCurrencies, 'Most exchanged')}
 				{generateOptions(otherCurrencies, 'A-Z')}
 			</select>
