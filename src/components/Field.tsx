@@ -4,13 +4,15 @@ import {
 	createContext, 
 	useContext,
 	HTMLAttributes,
-	useCallback
 } from "react";
+import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
+import * as A from "fp-ts/lib/Array";
 
 import styles from 'styles/field.module.scss';
 
 type InputValue = string | boolean | null;
+type ValidatorProps = { errors: E.Either<string[], string> };
 export type ValidatorType = { [key: string]: () => E.Either<string, string> }[];
 
 type Props = {
@@ -35,25 +37,28 @@ export default function Field({ fieldId, label, isRequired = false, ...props }: 
 		return setData(isCheckbox ? e.currentTarget.checked : e.currentTarget.value);
 	}
 
+	const formatErrorString = (acc: string, value: string) => acc += ` ${value}; `;
+	
 	const validateOnBlur = (e: SyntheticEvent<HTMLInputElement>) => {
 		if (!hasInteracted) setHasInteracted(true);
 		setNewValue(e);
 	}
-
-
-	const formatErrorsString = (errList: E.Either<string[], string>): string => {
-		return E.match(
-			(errList: string[]) => errList.reduce((acc, err) =>
-				acc += ` ${err}; `
-				, ''),
-			() => '',
-		)(errList);
-	};
-
-
-	const RequiredFeedback = () => {
-		if (!shouldShowFeedback) return null;
-		const hasSomeErrors = E.isLeft(validationErrors);
+	
+	const ErrorStringAnnouncer = ({ errors }: ValidatorProps) =>
+		pipe(errors,
+			E.fold(
+				A.reduce('', formatErrorString),
+				() => '',
+			),
+			(str) => {
+				return (
+					<span className={styles.warnText}>{str}</span>
+				)
+			}
+		)
+		
+	const RequiredFeedback = ({ errors }: ValidatorProps) => {
+		const hasSomeErrors = E.isLeft(errors);
 
 		return (
 			<div
@@ -65,29 +70,22 @@ export default function Field({ fieldId, label, isRequired = false, ...props }: 
 		)
 	}
 
-	const formattedFeedback = useCallback(() => 
-		shouldShowFeedback ? formatErrorsString(validationErrors) : ''
-	, [validationErrors?.left, validationErrors?._tag]);
-
 	return (
 		<div className={styles.field}>
 			<label htmlFor={fieldId}>{label}</label>
 			<div className={styles.inputWrap}>
 				<input
 					{...props}
-					className={validationErrors ? 'is-passing' : 'is-failing'}
+					className={validationErrors && styles.fieldFailing}
 					onBlur={validateOnBlur}
 					onChange={(e) => hasInteracted && setNewValue(e)}
 					id={fieldId}
 					name={fieldId}
 					required={isRequired}
 				/>
-				<RequiredFeedback />
-				<div 
-					className={styles.warnText}
-					aria-live="polite"
-				>
-					{ formattedFeedback() }
+				{ shouldShowFeedback && (<RequiredFeedback errors={validationErrors} />)}
+				<div aria-live="polite">
+					{ shouldShowFeedback && (<ErrorStringAnnouncer errors={validationErrors} />)}
 				</div>
 			</div>
 		</div>
