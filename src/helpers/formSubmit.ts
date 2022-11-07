@@ -4,7 +4,7 @@ import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import * as A from "fp-ts/Array";
 
-//import { logPipe } from "./functional";
+import { logPipe } from "./functional";
 import type { ValidatorType } from '../components/Field';
 
 type FormEvent = SyntheticEvent<HTMLFormElement>;
@@ -33,28 +33,28 @@ const isFieldRequired = (requiredKeys: Array<string>) =>
 		requiredKeys.some((key) => key === field[0]);
 
 const getValidationErrorsList = (validators: ValidatorType) =>
-	(fieldList: FormDataItem) => 
-		fieldList.reduce((acc: FormDataMatrix, item: FormDataItem) => {
-			const [ id, value ] = item;
-			const validationRes = validators[id]?.(value);
+	(fieldList: FormDataItem) =>
+		fieldList.reduce((acc: ErrorsList, item: FormDataItem) => {
+			const [fieldId, fieldValue] = item;
+			const validationRes = validators[fieldId]?.(fieldValue);
 
 			return E.isLeft(validationRes)
-				? acc.concat(validationRes)
+				? acc.concat({ fieldId, message: validationRes.left })
 				: acc
 		}, []);
 
-const errorsOnRequiredFields = (validators: ValidatorType, formData: FormDataMatrix) => {
-		const validatorKeys = getValidatorKeys(validators);
-		console.log('errors2 parameters', { validators, formData });
+const errorsOnRequiredFields = (validators: ValidatorType, formData: FormDataMatrix): ErrorsList => {
+	const validatorKeys = getValidatorKeys(validators);
+	console.log('errors2 parameters', { validators, formData });
 
-		return pipe(formData,
-			A.filter(isFieldRequired(validatorKeys)),
-			O.fromNullable,
-			O.fold(
-				() => [],
-				getValidationErrorsList(validators),
-			),
-    )
+	return pipe(formData,
+		A.filter(isFieldRequired(validatorKeys)),
+		O.fromNullable,
+		O.fold(
+			() => [],
+			getValidationErrorsList(validators),
+		),
+	)
 }
 
 const generateErrorStrings = (errorsList: ErrorsList): string => {
@@ -69,8 +69,8 @@ const getFeedbackString = (errorsList: ErrorsList): string => {
 	const SUCCESS_MSG = 'Everything is fine, everything is cool 😎';
 
 	return errorsList?.length
-			? generateErrorStrings(errorsList)
-			: SUCCESS_MSG;
+		? generateErrorStrings(errorsList)
+		: SUCCESS_MSG;
 }
 
 export const handleSubmit = (e: FormEvent, requiredValidators: ValidatorType): void => {
@@ -85,6 +85,6 @@ export const handleSubmit = (e: FormEvent, requiredValidators: ValidatorType): v
 	const errorsList: ErrorsList = errorsOnRequiredFields(requiredValidators, formMatrix);
 
 	return !errorsList.length
-			? e.currentTarget.submit()
-			: alert(getFeedbackString(errorsList));
+		? e.currentTarget.submit()
+		: alert(getFeedbackString(errorsList));
 }
