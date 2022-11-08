@@ -38,6 +38,22 @@ const fetchCurrenciesList = async() => {
   return currencyList;
 }
 
+ const fetchCurrencyToUSDRatio = async(currency: 'string') => {
+  const convertParams = {
+    amount: 1,
+    from: 'USD',
+    to: currency,
+  };
+
+  return await pipe(
+    TE.tryCatch(
+      () => fixerClient.get('/convert', { params: convertParams }),
+      (err) => new Error(`${err}`)
+    ),
+    TE.map((res: AxiosResponse) => res?.data?.result)
+  )()
+ }
+
 const fetchCurrenciesListByRelevance = async() => {
   const listData = await fetchCurrenciesList();
   return listByRelevanceTier(listData);
@@ -46,6 +62,7 @@ const fetchCurrenciesListByRelevance = async() => {
 const CurrencyService = {
   fetchCurrenciesList,
   fetchCurrenciesListByRelevance,
+  fetchCurrencyToUSDRatio,
 };
 
 export default CurrencyService;
