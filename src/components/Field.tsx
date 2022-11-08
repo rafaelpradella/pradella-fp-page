@@ -10,6 +10,8 @@ import * as E from "fp-ts/lib/Either";
 import * as A from "fp-ts/lib/Array";
 
 import styles from 'styles/field.module.scss';
+import { ErrorsList } from "helpers/validators";
+import { logPipe } from "helpers/functional";
 
 type InputValue = string | boolean | null;
 type ValidatorProps = { errors: E.Either<string[], string> };
@@ -37,14 +39,14 @@ export default function Field({ fieldId, label, isRequired = false, ...props }: 
 		return setData(isCheckbox ? e.currentTarget.checked : e.currentTarget.value);
 	}
 
-	const formatErrorString = (acc: string, value: string) => acc += ` ${value}; `;
+	const formatErrorString = (acc: string, value: ErrorsList[0]) => acc += ` ${value.message}; `;
 	
 	const validateOnBlur = (e: SyntheticEvent<HTMLInputElement>) => {
 		if (!hasInteracted) setHasInteracted(true);
 		setNewValue(e);
 	}
 	
-	const ErrorStringAnnouncer = ({ errors }: ValidatorProps) =>
+	const ErrorStringAnnouncer = ({ errors }: { errors: E.Either<ErrorsList, string> }) =>
 		pipe(errors,
 			E.fold(
 				A.reduce('', formatErrorString),

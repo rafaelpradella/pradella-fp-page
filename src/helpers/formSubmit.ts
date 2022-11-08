@@ -4,8 +4,7 @@ import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import * as A from "fp-ts/Array";
 
-import { logPipe } from "./functional";
-import type { ValidatorType } from '../components/Field';
+import type { ValidatorType } from './components/Field';
 
 type FormEvent = SyntheticEvent<HTMLFormElement>;
 export type FormDataItem = [string, string];
@@ -34,12 +33,12 @@ const isFieldRequired = (requiredKeys: Array<string>) =>
 
 const getValidationErrorsList = (validators: ValidatorType) =>
 	(fieldList: FormDataItem) =>
-		fieldList.reduce((acc: ErrorsList, item: FormDataItem) => {
+		fieldList.reduce((acc: ErrorsList, item) => {
 			const [fieldId, fieldValue] = item;
 			const validationRes = validators[fieldId]?.(fieldValue);
 
 			return E.isLeft(validationRes)
-				? acc.concat({ fieldId, message: validationRes.left })
+				? acc.concat(validationRes.left)
 				: acc
 		}, []);
 

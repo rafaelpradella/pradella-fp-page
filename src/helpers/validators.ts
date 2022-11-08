@@ -1,10 +1,12 @@
 import * as E from 'fp-ts/Either'
+import * as A from 'fp-ts/Array';
 import { pipe } from 'fp-ts/function';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { getSemigroup, ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray';
 
-import { lift } from './functional';
+import { lift, logPipe } from './functional';
 
+export type ErrorsList = Array<{ fieldId: string, message: string }>;
 const MIN_LENGTH = 6;
 const ERROR_MSG = {
 	NO_CONTENT: 'Fill the field',
@@ -25,11 +27,21 @@ const oneCapital = (s: string) =>
 const oneNumber = (s: string) =>
 	(/[0-9]/g.test(s)) ? E.right(s) : E.left(ERROR_MSG.NUMBER)
 
+const formatToErrorObject = <E, A>(fieldId: string) => (errorList: E.Either<E,A>) =>
+	pipe(errorList,
+		E.mapLeft((errors) =>
+			A.map(err => ({ fieldId, message: err }))(errors)
+		)
+	);
+
 export const validateName = (s: string) =>
 	pipe(
 		sequenceT(E.getApplicativeValidation(getSemigroup<string>()))(
 			lift(hasContent)(s),
-		)
+		),
+		logPipe('sequenceT name'),
+		formatToErrorObject('Name'),
+		logPipe('formatted name'),
 	)
 
 export const validatePassword = (s: string) =>
@@ -38,6 +50,9 @@ export const validatePassword = (s: string) =>
 			lift(minLenght)(s),
 			lift(oneCapital)(s),
 			lift(oneNumber)(s),
-		)
+		),
+		logPipe('sequenceT password'),
+		formatToErrorObject('Password'),
+		logPipe('formatted password'),
 	)
 
