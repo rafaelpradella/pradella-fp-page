@@ -111,6 +111,18 @@
   margin-left: 0.5rem;
 }
 
+.response {
+  font-size: .8rem;
+  line-height: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 48px;
+  justify-content: center;
+
+  code { opacity: .5; font-size: .85em; font-style: italic; }
+}
+
 .sendButton {
   background-color: var(--accent-color);
   border: none;
