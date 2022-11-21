@@ -22,16 +22,16 @@ export async function getStaticProps() {
 	console.log('STATIC_PROPS_DATA', currencyRes);
 
 	return {
-	  props: {
+		props: {
 			error: E.isLeft(currencyRes) ? currencyRes?.left.message : null,
 			otherCurrencies: E.isRight(currencyRes) ? currencyRes?.right?.left : null,
 			topCurrencies: E.isRight(currencyRes) ? currencyRes?.right?.right : null,
-	  },
+		},
 	}
 }
 
 export default function CurrencyConverter({ topCurrencies, otherCurrencies, error }: Props) {
-	const [ selectedSymbol, setSelectedSymbol ] = useState<RD.RemoteData<Error, RatioResponse>>(RD.initial);
+	const [selectedSymbol, setSelectedSymbol] = useState<RD.RemoteData<Error, RatioResponse>>(RD.initial);
 	console.log('StaticProps: 💵 Currency Converter => ', { topCurrencies, otherCurrencies, error });
 
 	const fetchSelectedOption = (ev: SyntheticEvent<HTMLSelectElement>) => {
@@ -43,29 +43,30 @@ export default function CurrencyConverter({ topCurrencies, otherCurrencies, erro
 			TE.map(ratio => ({ currency: currencySymbol, ratio })),
 			TE.bimap(RD.failure, RD.success),
 			TE.fold(
-        (err) => TE.fromIO(() => setSelectedSymbol(err)),
-        (res) => TE.fromIO(() => setSelectedSymbol(res))
-      ),
+				(err) => TE.fromIO(() => setSelectedSymbol(err)),
+				(res) => TE.fromIO(() => setSelectedSymbol(res))
+			),
 		)();
 	}
-	
+
 	const generateOptions = (currencies: Props['topCurrencies'], optgroup?: string) => {
-		if(!currencies?.length) return null;
-		
-		const OptWrapper = ({children}: { children: React.ReactNode[]}) =>
+		if (!currencies?.length) return null;
+
+		const OptWrapper = ({ children }: { children: React.ReactNode[] }) =>
 			optgroup
 				? (<optgroup label={optgroup}>{children}</optgroup>)
 				: (<>{children}</>)
 
 		return (
-				<OptWrapper>
-					{ currencies.map((currency, i) => (
-						<option value={currency[0]} key={i}>
-							{`${currency[0]} - ${currency[1]}`}
-						</option>
-					))}
-				</OptWrapper>
-	)};
+			<OptWrapper>
+				{currencies.map((currency, i) => (
+					<option value={currency[0]} key={i}>
+						{`${currency[0]} - ${currency[1]}`}
+					</option>
+				))}
+			</OptWrapper>
+		)
+	};
 
 	const CurrencySelector = () => {
 		return (
@@ -78,18 +79,18 @@ export default function CurrencyConverter({ topCurrencies, otherCurrencies, erro
 	};
 
 	const FeedbackInfo = () => pipe(selectedSymbol,
-			RD.fold(
-				() => (<span>Waiting your input 🥺</span>), 
-				() => (<span>🇺🇸 → → please wait  → → 🌍</span>),
-				(err) => (<span>{`Error caused by: ${err}`}</span>),
-				(res) => (
-					<>
-						<span>{`USD → ${res.currency} ratio is: ${res.ratio}`}</span>
-						<code>{JSON.stringify(selectedSymbol)}</code>
-					</>
-				),
-			)
-		);
+		RD.fold(
+			() => (<span>Waiting your input 🥺</span>),
+			() => (<span>🇺🇸 → → please wait  → → 🌍</span>),
+			(err) => (<span>{`Error caused by: ${err}`}</span>),
+			(res) => (
+				<>
+					<span>{`USD → ${res.currency} ratio is: ${res.ratio}`}</span>
+					<code>{JSON.stringify(selectedSymbol)}</code>
+				</>
+			),
+		)
+	);
 
 	return (
 		<Layout>
@@ -97,7 +98,7 @@ export default function CurrencyConverter({ topCurrencies, otherCurrencies, erro
 				Simulate currency conversions
 			</h1>
 			<fieldset>
-				{ error ? 'Something went wrong 😭' : (<CurrencySelector />) }
+				{error ? 'Something went wrong 😭' : (<CurrencySelector />)}
 			</fieldset>
 			<div className={styles.response}>
 				<FeedbackInfo />
