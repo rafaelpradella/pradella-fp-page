@@ -1,6 +1,7 @@
 import { PathReporter } from 'io-ts/PathReporter';
 import * as t from 'io-ts';
 import { withMessage } from 'io-ts-types';
+import { sparseType, optional } from 'io-ts-extra';
 import { pipe } from 'fp-ts/function';
 
 type NameBrand = { readonly Name: unique symbol };
@@ -16,10 +17,10 @@ const Password = t.brand(t.string,
   'Password',
 );
 
-const FormResponseCodec = t.type({
+const FormResponseCodec = sparseType({
   name: withMessage(Name, () => 'Please fill your name' ),
   password: Password,
-  isSigned: t.boolean
+  isSigned: optional(t.boolean),
 })
 
 export function Tester() {
