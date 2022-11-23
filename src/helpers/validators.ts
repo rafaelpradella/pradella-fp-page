@@ -4,7 +4,10 @@ import { pipe } from 'fp-ts/function';
 import { sequenceT } from 'fp-ts/lib/Apply';
 import { getSemigroup, ReadonlyNonEmptyArray } from 'fp-ts/lib/ReadonlyNonEmptyArray';
 
+import { Tester } from './validators.codec';
 import { lift, logPipe } from './functional';
+
+Tester();
 
 export type ErrorsList = Array<{ fieldId: string, message: string }>;
 const MIN_LENGTH = 6;
