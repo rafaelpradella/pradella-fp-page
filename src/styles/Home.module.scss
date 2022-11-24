@@ -142,7 +142,20 @@
     height: 33vw;
     border-radius: 50%;
     display: flex;
+    transition: all .95s ease-in-out;
   }
+}
+
+.videoFrame {
+  --plyr-color-main: var(--red-9);
+  aspect-ratio: 16 / 9;
+  background-color: rgba(20,20,20,.35);
+  box-shadow: var(--shadow-3);
+  border-radius: var(--radius-3);
+  overflow: hidden;
+  width: 90vw;
+  max-width: 820px;
+  width: 100%;
 }
 
 @media (max-width: 600px) {
