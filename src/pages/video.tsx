@@ -1,5 +1,6 @@
 import * as E from 'fp-ts/Either';
-import * as IOP from 'fp-ts/IOOption'
+import { IO } from 'fp-ts/IO';
+import { io } from 'fp-ts';
 import * as O from 'fp-ts/Option';
 import { pipe } from 'fp-ts/lib/function';
 import type { NextPage } from 'next'
@@ -34,21 +35,23 @@ const Video: NextPage = () => {
 		)
 	}
 
-	const FoggyBackground = ({ colors }: { colors: Array<ColorHex> }) => pipe(colors,
-		O.fromNullable,
-		O.filter(list => list?.length >= 1),
-		O.map(list =>
-			list.filter(hex => E.isRight(ColorHexCodec.decode(hex))
-			)),
-		O.fold(
-			() => (<code className='failed' />),
-			(hexList) => (
-				<code className={styles.foggyList}>
-					{hexList.map(hex => (<FoggyItem color={hex} key={hex} />))}
-				</code>
-			),
+	const FoggyBackground = ({ colors, videoRef }: { colors: Array<ColorHex>, videoRef: RefObject<APITypes> }) => {
+		return pipe(colors,
+			O.fromNullable,
+			O.filter(list => list?.length >= 1),
+			O.map(list =>
+				list.filter(hex => E.isRight(ColorHexCodec.decode(hex))
+				)),
+			O.fold(
+				() => (<code className='failed' />),
+				(hexList) => (
+					<code className={styles.foggyList}>
+						{hexList.map(hex => (<FoggyItem color={hex} key={hex} />))}
+					</code>
+				),
+			)
 		)
-	)
+	}
 
 	const PlyrTube = ({ id }: { id: string }) => {
 		const VIDEO_SRC = {
@@ -70,30 +73,35 @@ const Video: NextPage = () => {
 		)
 	}
 
-	const SpeedHandler = ({ videoRef } : { videoRef: RefObject<APITypes> }) => {
+	const SpeedHandler = ({ videoRef }: { videoRef: RefObject<APITypes> }) => {
 		const [speedInfo, setSpeedInfo] = useState<number>(1);
-		const changePace = (ev: SyntheticEvent<HTMLInputElement>) => pipe(ev,
+		const changePace = (ev: SyntheticEvent<HTMLInputElement>): IO<void> => pipe(ev,
 			O.fromNullable,
 			O.map(ev => ev?.target?.valueAsNumber),
-			O.map(value => {
-				videoRef.current.plyr.speed = value;
-				setSpeedInfo(value);
-			}),
+			O.fold(
+				() => io.of(undefined),
+				(value) => {
+					videoRef.current.plyr.speed = value;
+					setSpeedInfo(value);
+				}
+			)
 		);
 
 		return (
 			<>
-				<input 
+				<input
+					className={styles.speedSlider}
 					type="range"
 					min="0.5"
 					max="2"
 					step="0.25"
-					value={speedInfo}
+					defaultValue={1}
 					onChange={ev => changePace(ev)}
 				/>
 				<span>Actual Speed: {speedInfo}x</span>
 			</>
-		)}
+		)
+	}
 
 	return (
 		<Layout>

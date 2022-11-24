@@ -158,6 +158,13 @@
   width: 100%;
 }
 
+.speedSlider {
+  accent-color: var(--red-9);
+  margin: 20px auto 0;
+  width: 100%;
+  max-width: 300px;
+}
+
 @media (max-width: 600px) {
   .grid {
     width: 100%;
