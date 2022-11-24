@@ -131,6 +131,20 @@
   padding: 10px 20px;
 }
 
+.foggyList {
+  position: fixed;
+  display: flex;
+  filter: blur(12vw) opacity(.4);
+  z-index: -1;
+
+  * {
+    width: 33vw;
+    height: 33vw;
+    border-radius: 50%;
+    display: flex;
+  }
+}
+
 @media (max-width: 600px) {
   .grid {
     width: 100%;
