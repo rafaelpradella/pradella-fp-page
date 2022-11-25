@@ -98,7 +98,7 @@
     margin: 0 0 1rem 0;
     font-size: 1.5rem;
   }
-  
+
   p {
     margin: 0;
     font-size: 1.25rem;
@@ -120,7 +120,11 @@
   min-height: 48px;
   justify-content: center;
 
-  code { opacity: .5; font-size: .85em; font-style: italic; }
+  code {
+    opacity: .5;
+    font-size: .85em;
+    font-style: italic;
+  }
 }
 
 .sendButton {
@@ -134,22 +138,32 @@
 .foggyList {
   position: fixed;
   display: flex;
-  filter: blur(12vw) opacity(.4);
+  filter: blur(15vw) opacity(.8);
   z-index: -1;
 
   * {
-    width: 33vw;
-    height: 33vw;
+    width: 40vw;
+    height: 40vw;
     border-radius: 50%;
     display: flex;
-    transition: all .95s ease-in-out;
+    transition: all 1.5s ease-in-out;
+  }
+
+  @media(orientation: portrait) {
+    flex-direction: column;
+
+    * {
+      width: 40vh;
+      height: 40vh;
+
+    }
   }
 }
 
 .videoFrame {
   --plyr-color-main: var(--red-9);
   aspect-ratio: 16 / 9;
-  background-color: rgba(20,20,20,.35);
+  background-color: rgba(20, 20, 20, .35);
   box-shadow: var(--shadow-3);
   border-radius: var(--radius-3);
   overflow: hidden;
@@ -173,6 +187,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
+
   .card,
   .footer {
     border-color: #222;
