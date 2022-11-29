@@ -28,8 +28,10 @@ export async function getStaticProps() {
 const getUSDRatioFromOptionValue = ({ fetcher }: ControllerDeps,
   value: string,
   setState: Dispatch<SetStateAction<RDRatioResponse>>,
-) => pipe(value,
-    TE.fromIO(() => setState(RD.pending)),
+) => {
+  setState(RD.pending);
+
+  return pipe(value,
     fetcher,
     TE.map(ratio => ({ currency: value, ratio })),
     TE.bimap(RD.failure, RD.success),
@@ -38,6 +40,7 @@ const getUSDRatioFromOptionValue = ({ fetcher }: ControllerDeps,
       (res) => TE.fromIO(() => setState(res))
     ),
   )();
+}
 
 const makeUSDRatioFromOption = (deps: any) =>
   getUSDRatioFromOptionValue.bind(null, deps);
