@@ -1,16 +1,16 @@
 import type { NextPage } from 'next'
 
 import Layout from '../components/Layout'
-import styles from '../styles/Home.module.css'
+import styles from '../styles/Home.module.scss'
 
-const List: NextPage = () => {
+const SuccessPage: NextPage = () => {
 	return (
 		<Layout>
 			<h1 className={styles.title}>
-				Listing some things
+				TUDO OK!
 			</h1>
 		</Layout>
 	)
 }
 
-export default List
+export default SuccessPage

@@ -1,3 +1,13 @@
+@import 'open-props/gradients';
+@import 'open-props/sizes';
+@import 'open-props/easings';
+@import 'open-props/animations';
+@import 'open-props/colors';
+@import 'open-props/borders';
+@import 'open-props/shadows';
+@import 'open-props/fonts';
+@import 'open-props/masks/edges';
+
 html,
 body {
   --radius: 12px;
@@ -21,12 +31,16 @@ a {
   box-sizing: border-box;
 }
 
+fieldset {
+  border-radius: var(--radius);
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
   }
   body {
     color: white;
-    background: black;
+    background: #111111;
   }
 }

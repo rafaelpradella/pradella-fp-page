@@ -4,7 +4,7 @@ import { platform } from 'os';
 import Plyr from 'plyr-react';
 
 import Layout from '../components/Layout'
-import styles from '../styles/Home.module.css'
+import styles from '../styles/Home.module.scss'
 
 const Video: NextPage = () => {
 	
