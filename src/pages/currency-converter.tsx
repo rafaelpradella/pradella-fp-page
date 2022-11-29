@@ -4,9 +4,8 @@ import { pipe } from 'fp-ts/lib/function';
 
 import { USDRatioFromOption, RDRatioResponse } from 'controllers/CurrencyController';
 import type { CurrencyMatrix } from 'services/currency';
-import Layout from 'components/Layout'
+import { Layout } from 'components/Layout'
 import styles from 'styles/Home.module.scss'
-import { string } from 'io-ts';
 
 export { getStaticProps } from 'controllers/CurrencyController';
 
@@ -16,11 +15,11 @@ type Props = {
 	error: string | null,
 }
 
-export default function CurrencyConverter({ topCurrencies, otherCurrencies, error }: Props) {
+const CurrencyConverter: React.FC<Props> = ({ topCurrencies, otherCurrencies, error }) => {
 	const [selectedSymbol, setSelectedSymbol] = useState<RDRatioResponse>(RD.initial);
 	console.log('StaticProps: 💵 Currency Converter => ', { topCurrencies, otherCurrencies, error });
 
-	const OptionsSection = ({title, currencies}: { title: string, currencies: CurrencyMatrix | null }) => {
+	const OptionsSection = ({ title, currencies }: { title: string, currencies: CurrencyMatrix | null }) => {
 		if (!currencies?.length) return null;
 
 		const OptWrapper = ({ children }: { children: React.ReactNode[] }) =>
@@ -79,3 +78,5 @@ export default function CurrencyConverter({ topCurrencies, otherCurrencies, erro
 		</Layout>
 	)
 }
+
+export default CurrencyConverter;

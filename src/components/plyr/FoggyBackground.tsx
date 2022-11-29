@@ -28,8 +28,9 @@ const FoggyItem = ({ color, isPlaying }: ItemProps) => {
   )
 }
 
-export default function FoggyBackground({ colors, videoRef }: MainProps) {
+export const FoggyBackground: React.FC<MainProps> = ({ colors, videoRef }) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  // I tried to use videoRef.on() + useEffect for getting access to events, but didn´t work 😥
 
   return pipe(colors,
     O.fromNullable,

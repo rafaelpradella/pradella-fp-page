@@ -4,14 +4,14 @@ import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import * as A from "fp-ts/Array";
 
-import type { ValidatorType } from './components/Field';
+import type { ValidatorType } from 'components/Field';
 
 type FormEvent = SyntheticEvent<HTMLFormElement>;
-export type FormDataItem = [string, string];
+export type FormDataItem = [string, FormDataEntryValue];
 export type FormDataMatrix = Array<FormDataItem>;
 export type ErrorsList = Array<{ fieldId: string, message: string }>;
 
-const getFormData = (e: FormEvent): any => {
+const getFormData = (e: FormEvent): FormDataMatrix | null => {
 	if (!e?.currentTarget) return null;
 	const formData = new FormData(e?.currentTarget);
 	return [...formData.entries()];

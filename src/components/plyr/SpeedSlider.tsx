@@ -7,7 +7,7 @@ import * as IO from 'fp-ts/IOOption';
 import styles from 'styles/Home.module.scss';
 import { getSavedPlyrSettings } from "helpers/plyrHelpers";
 
-export default function SpeedHandler({ videoRef }: { videoRef: RefObject<APITypes> }) {
+export const SpeedHandler: React.FC<{ videoRef: RefObject<APITypes> }> = ({ videoRef }) => {
   const [speedInfo, setSpeedInfo] = useState<number>(1);
 
   useEffect(() => pipe('speed',

@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 import styles from '../styles/Home.module.scss'
 
-export default function Layout({ children }: { children: JSX.Element | JSX.Element[] }) {
+export const Layout: React.FC<{ children: JSX.Element | JSX.Element[] }> = ({ children }) => {
   return (
     <div className={styles.container}>
       <Head>

@@ -11,6 +11,24 @@ export type CurrencyResponse = { currencies: CurrencyData, success: boolean };
 export type CurrencyData = { [key: string] : string };
 export type CurrencyMatrix = [string, string][];
 
+interface Query {
+  from: string;
+  to: string;
+  amount: number;
+}
+
+interface Info {
+  timestamp: number;
+  quote: number;
+}
+
+export interface ConversionRatioResponse {
+  success: boolean;
+  query: Query;
+  info: Info;
+  result: number;
+}
+
 const TOP_NOTCH_CURRENCIES = ['EUR', 'GBP', 'AUD', 'NZD', 'USD', 'CAD', 'CHF', 'JPY', 'BTC'] as const;
 
 const isTopCurrency = (key: string[]) => {
@@ -38,7 +56,7 @@ const fetchCurrenciesList = async() => {
   return currencyList;
 }
 
- const fetchCurrencyToUSDRatio = (currency: 'string') => {
+ const fetchCurrencyToUSDRatio = (currency: string): TE.TaskEither<Error, ConversionRatioResponse> => {
   const convertParams = { amount: 1, from: 'USD', to: currency };
 
   return pipe(

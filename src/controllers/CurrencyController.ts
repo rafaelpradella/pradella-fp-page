@@ -4,10 +4,10 @@ import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/function';
 import type { Dispatch, SetStateAction } from "react";
 
-import CurrencyService from "services/currency";
+import CurrencyService, { ConversionRatioResponse } from "services/currency";
 
 type ControllerDeps = {
-  fetcher: () => TE.TaskEither<Error, any>,
+  fetcher: (currency: string) => TE.TaskEither<Error, ConversionRatioResponse>,
 }
 type RatioResponse = { currency: string, ratio: number };
 export type RDRatioResponse = RD.RemoteData<Error, RatioResponse>;
@@ -42,7 +42,7 @@ const getUSDRatioFromOptionValue = ({ fetcher }: ControllerDeps,
   )();
 }
 
-const makeUSDRatioFromOption = (deps: any) =>
+const makeUSDRatioFromOption = (deps: ControllerDeps) =>
   getUSDRatioFromOptionValue.bind(null, deps);
 
 export const USDRatioFromOption = makeUSDRatioFromOption({ fetcher: CurrencyService.fetchCurrencyToUSDRatio });

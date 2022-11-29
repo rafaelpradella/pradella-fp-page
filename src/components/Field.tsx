@@ -1,7 +1,7 @@
-import { 
+import {
 	SyntheticEvent,
 	useState,
-	createContext, 
+	createContext,
 	useContext,
 	HTMLAttributes,
 } from "react";
@@ -14,7 +14,8 @@ import { ErrorsList } from "helpers/validators";
 import { logPipe } from "helpers/functional";
 
 type InputValue = string | boolean | null;
-type ValidatorProps = { errors: E.Either<string[], string> };
+type ValidationEither = E.Either<ErrorsList, string[]>;
+type ValidatorProps = { errors: ValidationEither };
 export type ValidatorType = { [key: string]: () => E.Either<string, string> }[];
 
 type Props = {
@@ -25,13 +26,13 @@ type Props = {
 
 export const FormContext = createContext<ValidatorType>([]);
 
-export default function Field({ fieldId, label, isRequired = false, ...props }: Props) {
+export const Field: React.FC<Props> = ({ fieldId, label, isRequired = false, ...props }) => {
 	const validators = useContext<any>(FormContext);
 	const [hasInteracted, setHasInteracted] = useState<boolean>(false);
 	const [data, setData] = useState<InputValue>(null);
 
 	const shouldValidateUser = isRequired && !!validators[fieldId];
-	const validationErrors: E.Either<string[], string> = validators[fieldId]?.(data);
+	const validationErrors: ValidationEither = validators[fieldId]?.(data);
 	const shouldShowFeedback = shouldValidateUser && hasInteracted;
 
 	const setNewValue = (e: SyntheticEvent<HTMLInputElement>) => {
@@ -40,13 +41,13 @@ export default function Field({ fieldId, label, isRequired = false, ...props }: 
 	}
 
 	const formatErrorString = (acc: string, value: ErrorsList[0]) => acc += ` ${value.message}; `;
-	
+
 	const validateOnBlur = (e: SyntheticEvent<HTMLInputElement>) => {
-		if (!hasInteracted) setHasInteracted(true);
+		hasInteracted || setHasInteracted(true);
 		setNewValue(e);
 	}
-	
-	const ErrorStringAnnouncer = ({ errors }: { errors: E.Either<ErrorsList, string> }) =>
+
+	const ErrorStringAnnouncer = ({ errors }: { errors: ValidationEither }) =>
 		pipe(errors,
 			E.fold(
 				A.reduce('', formatErrorString),
@@ -58,13 +59,13 @@ export default function Field({ fieldId, label, isRequired = false, ...props }: 
 				)
 			}
 		)
-		
+
 	const RequiredFeedback = ({ errors }: ValidatorProps) => {
 		const hasSomeErrors = E.isLeft(errors);
 
 		return (
 			<div
-				aria-label={`${fieldId} ${hasSomeErrors ? 'has some issues' : 'OK'}` }
+				aria-label={`${fieldId} ${hasSomeErrors ? 'has some issues' : 'OK'}`}
 				className={styles.warnSign}
 			>
 				{hasSomeErrors ? '❌' : '✅'}
@@ -85,9 +86,9 @@ export default function Field({ fieldId, label, isRequired = false, ...props }: 
 					name={fieldId}
 					required={isRequired}
 				/>
-				{ shouldShowFeedback && (<RequiredFeedback errors={validationErrors} />)}
+				{shouldShowFeedback && (<RequiredFeedback errors={validationErrors} />)}
 				<div aria-live="polite">
-					{ shouldShowFeedback && (<ErrorStringAnnouncer errors={validationErrors} />)}
+					{shouldShowFeedback && (<ErrorStringAnnouncer errors={validationErrors} />)}
 				</div>
 			</div>
 		</div>
