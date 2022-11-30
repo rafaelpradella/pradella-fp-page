@@ -6,7 +6,9 @@
     "dev": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
     "@devexperts/remote-data-ts": "^2.1.1",
@@ -23,14 +25,30 @@
     "plyr-react": "^5.1.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "rxjs": "^7.5.7"
+    "rxjs": "^7.5.7",
+    "sass-loader": "^13.2.0",
+    "storybook-css-modules": "^1.0.8",
+    "tsconfig-paths-webpack-plugin": "^4.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.20.5",
+    "@mdx-js/react": "^1.6.22",
+    "@storybook/addon-actions": "^6.5.13",
+    "@storybook/addon-docs": "^6.5.13",
+    "@storybook/addon-essentials": "^6.5.13",
+    "@storybook/addon-interactions": "^6.5.13",
+    "@storybook/addon-links": "^6.5.13",
+    "@storybook/builder-webpack5": "^6.5.13",
+    "@storybook/manager-webpack5": "^6.5.13",
+    "@storybook/react": "^6.5.13",
+    "@storybook/testing-library": "^0.0.13",
     "@types/node": "18.8.5",
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
+    "babel-loader": "^8.3.0",
     "eslint": "8.25.0",
     "eslint-config-next": "12.3.1",
+    "eslint-plugin-storybook": "^0.6.7",
     "io-ts-types": "^0.5.19",
     "sass": "^1.55.0",
     "typescript": "4.8.4"
