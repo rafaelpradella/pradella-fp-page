@@ -1,11 +1,11 @@
 import React, { useState, useEffect, RefObject, SyntheticEvent } from "react";
-import type { APITypes } from "plyr-react";
-import { pipe } from "fp-ts/lib/function";
+import type { APITypes } from 'plyr-react';
+import { pipe } from 'fp-ts/lib/function';
 import * as O from 'fp-ts/Option';
 import * as IO from 'fp-ts/IOOption';
 
-import styles from 'styles/Home.module.scss';
-import { getSavedPlyrSettings } from "helpers/plyrHelpers";
+import styles from '~/styles/Home.module.scss';
+import { getSavedPlyrSettings } from '~/helpers/plyrHelpers';
 
 export const SpeedHandler: React.FC<{ videoRef: RefObject<APITypes> }> = ({ videoRef }) => {
   const [speedInfo, setSpeedInfo] = useState<number>(1);

@@ -1,10 +1,10 @@
 import type { NextPage } from 'next'
 
-import { handleSubmit } from 'helpers/formSubmit'
-import { validateName, validatePassword } from 'helpers/validators'
-import { Field, FormContext } from 'components/Field'
-import { Layout } from 'components/Layout'
-import styles from 'styles/Home.module.scss'
+import { handleSubmit } from '~/helpers/formSubmit'
+import { validateName, validatePassword } from '~/helpers/validators'
+import { Field, FormContext } from '~/components/Field'
+import { Layout } from '~/components/Layout'
+import styles from '~/styles/Home.module.scss'
 
 const Form: NextPage = () => {
 

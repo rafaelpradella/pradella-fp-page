@@ -3,10 +3,10 @@ import type { NextPage } from 'next'
 import Plyr, { APITypes } from 'plyr-react';
 import "plyr-react/plyr.css";
 
-import { Layout } from 'components/Layout';
-import { FoggyBackground } from 'components/plyr/FoggyBackground';
-import { SpeedHandler } from 'components/plyr/SpeedSlider';
-import styles from 'styles/Home.module.scss';
+import { Layout } from '~/components/Layout';
+import { FoggyBackground } from '~/components/plyr/FoggyBackground';
+import { SpeedHandler } from '~/components/plyr/SpeedSlider';
+import styles from '~/styles/Home.module.scss';
 
 const Video: NextPage = () => {
 	const plyrEl = useRef<APITypes>(null);

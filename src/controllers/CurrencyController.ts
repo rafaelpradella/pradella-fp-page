@@ -4,7 +4,7 @@ import * as E from 'fp-ts/Either';
 import { pipe } from 'fp-ts/function';
 import type { Dispatch, SetStateAction } from "react";
 
-import CurrencyService, { ConversionRatioResponse } from "services/currency";
+import CurrencyService, { ConversionRatioResponse } from "~/services/currency";
 
 type ControllerDeps = {
   fetcher: (currency: string) => TE.TaskEither<Error, ConversionRatioResponse>,

@@ -4,8 +4,8 @@ import * as O from 'fp-ts/Option';
 import { pipe } from 'fp-ts/lib/function';
 import { APITypes } from "plyr-react";
 
-import styles from 'styles/Home.module.scss';
-import { ColorHex, ColorHexCodec } from "types/colors.codec";
+import styles from '~/styles/Home.module.scss';
+import { ColorHex, ColorHexCodec } from '~/types/colors.codec';
 
 type MainProps = { colors: Array<ColorHex>, videoRef: RefObject<APITypes> };
 type ItemProps = { color: ColorHex, isPlaying: boolean };

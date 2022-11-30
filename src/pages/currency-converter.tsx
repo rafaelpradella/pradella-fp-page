@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import * as RD from '@devexperts/remote-data-ts';
 import { pipe } from 'fp-ts/lib/function';
 
-import { USDRatioFromOption, RDRatioResponse } from 'controllers/CurrencyController';
-import type { CurrencyMatrix } from 'services/currency';
-import { Layout } from 'components/Layout'
-import styles from 'styles/Home.module.scss'
+import { USDRatioFromOption, RDRatioResponse } from '~/controllers/CurrencyController';
+import type { CurrencyMatrix } from '~/services/currency';
+import { Layout } from '~/components/Layout'
+import styles from '~/styles/Home.module.scss'
 
-export { getStaticProps } from 'controllers/CurrencyController';
+export { getStaticProps } from '~/controllers/CurrencyController';
 
 type Props = {
 	topCurrencies: CurrencyMatrix | null,

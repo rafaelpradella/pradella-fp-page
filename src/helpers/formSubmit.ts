@@ -4,7 +4,7 @@ import * as E from "fp-ts/lib/Either";
 import * as O from "fp-ts/lib/Option";
 import * as A from "fp-ts/Array";
 
-import type { ValidatorType } from 'components/Field';
+import type { ValidatorType } from '~/components/Field';
 
 type FormEvent = SyntheticEvent<HTMLFormElement>;
 export type FormDataItem = [string, FormDataEntryValue];

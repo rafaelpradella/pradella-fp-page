@@ -9,9 +9,9 @@ import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
 import * as A from "fp-ts/lib/Array";
 
-import styles from 'styles/field.module.scss';
-import { ErrorsList } from "helpers/validators";
-import { logPipe } from "helpers/functional";
+import styles from '~/styles/field.module.scss';
+import { ErrorsList } from '~/helpers/validators';
+import { logPipe } from '~/helpers/functional';
 
 type InputValue = string | boolean | null;
 type ValidationEither = E.Either<ErrorsList, string[]>;
