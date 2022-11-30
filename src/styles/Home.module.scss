@@ -137,7 +137,10 @@
 
 .foggyList {
   position: fixed;
+  inset: 0px;
   display: flex;
+  align-items: center;
+  justify-content: center;
   filter: blur(15vw) opacity(.8);
   z-index: -1;
 

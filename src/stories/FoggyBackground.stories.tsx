@@ -3,39 +3,30 @@ import { ComponentStory, ComponentMeta } from '@storybook/react';
 
 import { FoggyBackground } from '~/components/plyr/FoggyBackground';
 
-// More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
   title: 'Plyr/FoggyBackground',
   component: FoggyBackground,
 } as ComponentMeta<typeof FoggyBackground>;
 
-// More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: ComponentStory<typeof FoggyBackground> = (args) => <FoggyBackground {...args} />;
 
 export const ThreeColors = Template.bind({});
-// More on args: https://storybook.js.org/docs/react/writing-stories/args
+export const MultipleColors = Template.bind({});
+export const OneColor = Template.bind({});
+export const InvalidHex = Template.bind({});
+
 ThreeColors.args = {
-  colors: ['#333', '#f00', '#00f'],
+  colors: ['#24CB8E', '#72B9FA', '#D69DF8'],
 };
 
-export const InvalidColors = Template.bind({});
-InvalidColors.args = {
-  colors: ['foggy', '#a', '#333333']
+MultipleColors.args = {
+  colors: ['#FD96A0', '#E6A763', '#A0BF4A', '#24CB8E', '#72B9FA', '#D69DF8'],
 }
 
-/*export const Secondary = Template.bind({});
-Secondary.args = {
-  label: 'FoggyBackground',
+OneColor.args = {
+  colors: ['#24CB8E'],
 };
 
-export const Large = Template.bind({});
-Large.args = {
-  size: 'large',
-  label: 'FoggyBackground',
+InvalidHex.args = {
+  colors: [42, '#a', 'rgb(255,255,255)']
 };
-
-export const Small = Template.bind({});
-Small.args = {
-  size: 'small',
-  label: 'FoggyBackground',
-};*/
