@@ -20,6 +20,6 @@
       "@storybook/*": ["src/stories/*"],
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/controllers/CurrencyController.test.js"],
   "exclude": ["node_modules"]
 }
