@@ -42,7 +42,7 @@ const getUSDRatioFromOptionValue = ({ fetcher }: ControllerDeps,
   )();
 }
 
-const makeUSDRatioFromOption = (deps: ControllerDeps) =>
+export const makeUSDRatioFromOption = (deps: ControllerDeps) =>
   getUSDRatioFromOptionValue.bind(null, deps);
 
 export const USDRatioFromOption = makeUSDRatioFromOption({ fetcher: CurrencyService.fetchCurrencyToUSDRatio });
