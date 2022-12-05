@@ -19,7 +19,7 @@ const FoggyItem = ({ color, isPlaying }: ItemProps) => {
   useEffect(() => {
     const shouldAnimate = !isPlaying && !window?.matchMedia('(prefers-reduced-motion: reduce)')?.matches;
     shouldAnimate && setTimeout(() => setTranslateX(Math.random() * 100 / 3), 1500);
-  }, [translateX])
+  }, [translateX, isPlaying])
 
   return (
     <span style={{ backgroundColor: color, transform: `translateX(${translateX}%)` }}>
