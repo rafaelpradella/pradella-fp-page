@@ -3,7 +3,6 @@ import {
 	useState,
 	createContext,
 	useContext,
-	HTMLAttributes,
 } from "react";
 import { pipe } from "fp-ts/lib/function";
 import * as E from "fp-ts/lib/Either";
@@ -11,18 +10,17 @@ import * as A from "fp-ts/lib/Array";
 
 import styles from '~/styles/field.module.scss';
 import { ErrorsList } from '~/helpers/validators';
-import { logPipe } from '~/helpers/functional';
 
 type InputValue = string | boolean | null;
 type ValidationEither = E.Either<ErrorsList, string[]>;
 type ValidatorProps = { errors: ValidationEither };
 export type ValidatorType = { [key: string]: () => E.Either<string, string> }[];
 
-type Props = {
+interface Props extends Partial<HTMLInputElement> {
 	fieldId: string,
 	label: string,
 	isRequired?: boolean,
-} & HTMLAttributes<HTMLInputElement>
+}
 
 export const FormContext = createContext<ValidatorType>([]);
 
