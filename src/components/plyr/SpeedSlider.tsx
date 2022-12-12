@@ -7,7 +7,7 @@ import * as IO from 'fp-ts/IOOption';
 import styles from '~/styles/Home.module.scss';
 import { getSavedPlyrSettings } from '~/helpers/plyrHelpers';
 
-export const SpeedHandler: React.FC<{ videoRef: RefObject<APITypes> }> = ({ videoRef }) => {
+export const SpeedSlider: React.FC<{ videoRef: RefObject<APITypes> }> = ({ videoRef }) => {
   const [speedInfo, setSpeedInfo] = useState<number>(1);
 
   useEffect(() => pipe('speed',
@@ -20,9 +20,9 @@ export const SpeedHandler: React.FC<{ videoRef: RefObject<APITypes> }> = ({ vide
 
   const changePace = (ev: SyntheticEvent<HTMLInputElement>) => pipe(ev,
     O.fromNullable,
-    O.map(ev => ev?.target?.valueAsNumber),
+    O.map(ev => ev?.currentTarget?.valueAsNumber),
     O.fold(
-      () => io.of(undefined),
+      () => {},
       (value) => {
         videoRef.current.plyr.speed = value;
         setSpeedInfo(value);
@@ -30,9 +30,9 @@ export const SpeedHandler: React.FC<{ videoRef: RefObject<APITypes> }> = ({ vide
     ));
 
   return (
-    <>
+    <div className={styles.speedSlider}>
       <input
-        className={styles.speedSlider}
+        id="speedRange"
         type="range"
         min="0.5"
         max="2"
@@ -40,7 +40,7 @@ export const SpeedHandler: React.FC<{ videoRef: RefObject<APITypes> }> = ({ vide
         defaultValue={speedInfo}
         onChange={ev => changePace(ev)}
       />
-      <span>Actual Speed: {speedInfo}x</span>
-    </>
+      <label htmlFor="speedRange">Actual Speed: {speedInfo}x</label>
+    </div>
   );
 }

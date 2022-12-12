@@ -170,6 +170,6 @@ const CURRENCY_MOCK = {
     "ZWL": "Zimbabwean Dollar"
   },
   "success": true
-};
+} as const;
 
 export default CURRENCY_MOCK;

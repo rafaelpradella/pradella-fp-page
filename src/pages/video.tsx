@@ -5,7 +5,7 @@ import "plyr-react/plyr.css";
 
 import { Layout } from '~/components/Layout';
 import { FoggyBackground } from '~/components/plyr/FoggyBackground';
-import { SpeedHandler } from '~/components/plyr/SpeedSlider';
+import { SpeedSlider } from '~/components/plyr/SpeedSlider';
 import styles from '~/styles/Home.module.scss';
 
 const Video: NextPage = () => {
@@ -40,7 +40,7 @@ const Video: NextPage = () => {
 				Relax and watch this:
 			</h1>
 			<PlyrTube id={POUR_UNE_VOIX_ID} />
-			<SpeedHandler videoRef={plyrEl} />
+			<SpeedSlider videoRef={plyrEl} />
 		</Layout>
 	)
 }

@@ -1,22 +1,26 @@
-const path = require("path");
+const path = require('path');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
+const toPath = (_path) => path.join(process.cwd(), _path);
+
 module.exports = {
-  "stories": [
-    "../src/**/*.stories.mdx",
-    "../src/**/*.stories.@(js|jsx|ts|tsx)"
-  ],
-  "addons": [
+  staticDirs: ['../public'],
+  stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
+  addons: [
     "@storybook/addon-links",
     "@storybook/addon-essentials",
     "@storybook/addon-interactions",
     "storybook-css-modules",
   ],
-  "framework": "@storybook/react",
-  "core": {
-    "builder": "@storybook/builder-webpack5"
+  core: {
+    builder: {
+      name: "@storybook/builder-webpack5",
+    },
   },
-  "webpackFinal": async (config, { configType }) => {
+  features: {
+    interactionsDebugger: true,
+  },
+  webpackFinal: async (config) => {
     //ADDING SASS MODULES SUPPORT
     config.module.rules.push({
       test: /\.scss$/,
@@ -25,6 +29,7 @@ module.exports = {
     });
     //RECOGNIZE TS ALIAS PATHS
     config.resolve.plugins = [new TsconfigPathsPlugin()];
+
     return config;
   },
-}
+};
