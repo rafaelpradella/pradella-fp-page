@@ -73,7 +73,7 @@ const CurrencyConverter: React.FC<Props> = ({ topCurrencies, otherCurrencies, er
 				{error ? 'Something went wrong 😭' : (<CurrencySelector />)}
 			</fieldset>
 			<div className={styles.response}>
-				<FeedbackInfo />
+				{error ? null : (<FeedbackInfo />)}
 			</div>
 		</Layout>
 	)

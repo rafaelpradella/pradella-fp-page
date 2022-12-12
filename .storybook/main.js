@@ -10,7 +10,7 @@ module.exports = {
     "@storybook/addon-links",
     "@storybook/addon-essentials",
     "@storybook/addon-interactions",
-    "storybook-css-modules",
+    "storybook-addon-next",
   ],
   core: {
     builder: {
@@ -20,16 +20,5 @@ module.exports = {
   features: {
     interactionsDebugger: true,
   },
-  webpackFinal: async (config) => {
-    //ADDING SASS MODULES SUPPORT
-    config.module.rules.push({
-      test: /\.scss$/,
-      use: ['style-loader', 'css-loader?modules&importLoaders', 'sass-loader'],
-      include: path.resolve(__dirname, '../'),
-    });
-    //RECOGNIZE TS ALIAS PATHS
-    config.resolve.plugins = [new TsconfigPathsPlugin()];
-
-    return config;
-  },
+  webpackFinal: async (config) => config,
 };
