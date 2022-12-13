@@ -20,9 +20,9 @@ export const SpeedSlider: React.FC<{ videoRef: RefObject<APITypes> }> = ({ video
 
   const changePace = (ev: SyntheticEvent<HTMLInputElement>) => pipe(ev,
     O.fromNullable,
-    O.map(ev => ev?.currentTarget?.valueAsNumber),
+    O.chain(() => O.fromNullable(ev?.currentTarget?.valueAsNumber)),
     O.fold(
-      () => {},
+      () => console.error('SpeedSlider: Couldn´t change speed value right now'),
       (value) => {
         videoRef.current.plyr.speed = value;
         setSpeedInfo(value);
