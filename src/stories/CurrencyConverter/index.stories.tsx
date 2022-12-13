@@ -1,6 +1,6 @@
 import { rest } from 'msw';
 import { expect } from '@storybook/jest';
-import { userEvent, within } from '@storybook/testing-library';
+import { userEvent, waitFor, within } from '@storybook/testing-library';
 import type { ComponentStory, ComponentMeta } from '@storybook/react'
 
 import { USD_RATIO_MOCK, USD_RATIO_ERROR_MOCK } from '~/tests/mocks/usdRatio.mock';
@@ -16,11 +16,12 @@ const Template: ComponentStory<typeof CurrencyConverter> = (args) => <CurrencyCo
 const checkDefaultUI = async (canvas: any) => { //Yeah, I know...
   await canvas.findByRole('heading', { level: 1, name: /currency/i });
   const allOptions = await canvas.findAllByRole('option', { selected: false });
+  const feedbackBox = await canvas.findByRole('status');
 
   await canvas.findByRole('group', { name: /a-z/i });
   await canvas.findByRole('group', { name: /most exchanged/i });
 
-  await canvas.findByText(/waiting your input/i);
+  expect(feedbackBox).toHaveTextContent(/waiting/i);
   expect(allOptions.length).toBe(4);
 }
 
@@ -30,6 +31,23 @@ InitialSuccess.args = {
   error: null,
   topCurrencies: [['TOP', 'Top Currency #1'], ['TP2', 'Top Currency #2']],
   otherCurrencies: [['REG', 'Regular Currency #1'], ['ERR', 'Error Case']],
+};
+InitialSuccess.parameters = {
+  msw: {
+    handlers: [
+      rest.get(/convert/i, (req, res, ctx) => {
+        const reqCurrency = req.url.searchParams.get('to');
+
+        if (!reqCurrency || reqCurrency === 'ERR') {
+          //SIMULATE MALFORMED 'TO' PARAMETER
+          return res(
+            ctx.json(USD_RATIO_ERROR_MOCK)
+          )
+        }
+        return res(ctx.json(USD_RATIO_MOCK(reqCurrency)))
+      }),
+    ],
+  },
 };
 InitialSuccess.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
@@ -50,26 +68,18 @@ InitialError.play = async ({ canvasElement }) => {
 // DEFAULT WITH RATIO REQUEST
 export const GetRatioResult = Template.bind({});
 GetRatioResult.args = InitialSuccess.args;
-/*GetRatioResult.parameters = {
-  msw: {
-    handlers: [
-      rest.get('https://api.apilayer.com/currency_data/convert', (req, res, ctx) => {
-        const currency = req?.params?.to;
-        if (currency === 'ERR') {
-          return res(
-            ctx.status(400),
-            ctx.json(USD_RATIO_ERROR_MOCK(currency))
-          )
-        }
-        return res(ctx.json(USD_RATIO_MOCK(currency)))
-      }),
-    ],
-  },
-};*/
+GetRatioResult.parameters = InitialSuccess.parameters;
 GetRatioResult.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement);
   checkDefaultUI(canvas);
   const selectEl = await canvas.findByRole('combobox');
+  const feedbackBox = await canvas.findByRole('status');
 
   await userEvent.selectOptions(selectEl, ['TOP']);
+  expect(feedbackBox).toHaveTextContent(/please wait/i);
+  
+  waitFor(() => {
+    expect(feedbackBox).toHaveTextContent(/remotesuccess/i);
+    expect(feedbackBox).toHaveTextContent(/top ratio is: 9999/i);
+  }, { timeout: 2000 })
 }

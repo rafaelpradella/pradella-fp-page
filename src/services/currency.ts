@@ -22,12 +22,22 @@ interface Info {
   quote: number;
 }
 
-export interface ConversionRatioResponse {
+type RatioSuccessResponse = {
   success: boolean;
   query: Query;
   info: Info;
   result: number;
 }
+
+type RatioFailedResponse = {
+  success: boolean,
+  error: {
+    code: number,
+    info: string,
+  },
+}
+
+export type ConversionRatioResponse = RatioSuccessResponse | RatioFailedResponse;
 
 const TOP_NOTCH_CURRENCIES = ['EUR', 'GBP', 'AUD', 'NZD', 'USD', 'CAD', 'CHF', 'JPY', 'BTC'] as const;
 

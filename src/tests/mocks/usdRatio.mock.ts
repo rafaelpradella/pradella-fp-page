@@ -1,8 +1,4 @@
 export const USD_RATIO_MOCK = (currency: string) => ({
-  "info": {
-    "quote": 2.33685,
-    "timestamp": 1670880723
-  },
   "query": {
     "amount": 1,
     "from": "USD",
@@ -12,15 +8,10 @@ export const USD_RATIO_MOCK = (currency: string) => ({
   "success": true
 })
 
-export const USD_RATIO_ERROR_MOCK = (currency: string) => ({
-  "info": {
-    "quote": 2.33685,
-    "timestamp": 1670880723
-  },
-  "query": {
-    "amount": 1,
-    "from": "USD",
-    "to": currency
-  },
-  "success": false
-})
+export const USD_RATIO_ERROR_MOCK = {
+  "success": false,
+  "error": {
+    "code": 402,
+    "info": "You have entered an invalid \"to\" property. [Example: to=GBP]"
+  }
+}
