@@ -1,15 +1,35 @@
 import { SyntheticEvent } from "react";
-import { pipe } from "fp-ts/lib/function";
-import * as E from "fp-ts/lib/Either";
-import * as O from "fp-ts/lib/Option";
+import { pipe } from "fp-ts/function";
+import * as E from "fp-ts/Either";
+import * as O from "fp-ts/Option";
 import * as A from "fp-ts/Array";
 
 import type { ValidatorType } from '~/components/Field';
+import { logPipe } from "./functional";
 
 type FormEvent = SyntheticEvent<HTMLFormElement>;
 export type FormDataItem = [string, FormDataEntryValue];
 export type FormDataMatrix = Array<FormDataItem>;
 export type ErrorsList = Array<{ fieldId: string, message: string }>;
+
+/* FUNCTIONAL ATTEMPTS
+const getFormData = (e: FormEvent) => pipe(e,
+	O.fromNullable,
+	O.chain(
+		(ev) => O.fromNullable(ev.currentTarget)
+	),
+	O.map(target => new FormData(target)),
+	O.map((formData) => [...formData.entries()])
+);
+
+const getValidatorKeys = (validators: ValidatorType) => pipe(validators,
+	O.fromNullable,
+	O.chain(
+		(val) => O.fromNullable(Object.keys(val))
+	),
+	logPipe('getValidatorKeys'),
+)
+*/
 
 const getFormData = (e: FormEvent): FormDataMatrix | null => {
 	if (!e?.currentTarget) return null;
@@ -25,7 +45,6 @@ const hasAllRequiredBeenFilled = (formData: FormDataMatrix) =>
 	(keys: Array<string>) =>
 		keys.every(key =>
 			formData.some((matrix: FormDataItem) => matrix[0] === key && !!matrix[1]));
-
 
 const isFieldRequired = (requiredKeys: Array<string>) =>
 	(field: FormDataItem) =>
