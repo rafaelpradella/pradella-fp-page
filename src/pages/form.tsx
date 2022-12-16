@@ -39,7 +39,7 @@ const Form: NextPage = () => {
 						fieldId='formPassword'
 						label='Password'
 						placeholder='Insert a new password'
-						autocomplete='new-password'
+						autoComplete='new-password'
 					/>
 					<Field
 						type='checkbox'

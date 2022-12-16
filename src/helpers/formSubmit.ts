@@ -1,45 +1,29 @@
 import { SyntheticEvent } from "react";
 import { pipe } from "fp-ts/function";
+import { filter } from "fp-ts/Array";
 import * as E from "fp-ts/Either";
 import * as O from "fp-ts/Option";
-import * as A from "fp-ts/Array";
 
 import type { ValidatorType } from '~/components/Field';
-import { logPipe } from "./functional";
 
 type FormEvent = SyntheticEvent<HTMLFormElement>;
 export type FormDataItem = [string, FormDataEntryValue];
 export type FormDataMatrix = Array<FormDataItem>;
 export type ErrorsList = Array<{ fieldId: string, message: string }>;
 
-/* FUNCTIONAL ATTEMPTS
-const getFormData = (e: FormEvent) => pipe(e,
+const getFormData = (e: FormEvent): [string, FormDataEntryValue][] => pipe(e,
 	O.fromNullable,
-	O.chain(
-		(ev) => O.fromNullable(ev.currentTarget)
-	),
+	O.chain((ev) => O.fromNullable(ev.currentTarget)),
 	O.map(target => new FormData(target)),
-	O.map((formData) => [...formData.entries()])
+	O.map((formData) => [...formData.entries()]),
+	O.fold(() => [], (res) => res),
 );
 
-const getValidatorKeys = (validators: ValidatorType) => pipe(validators,
+const getValidatorKeys = (validators: ValidatorType): string[] => pipe(validators,
 	O.fromNullable,
-	O.chain(
-		(val) => O.fromNullable(Object.keys(val))
-	),
-	logPipe('getValidatorKeys'),
-)
-*/
-
-const getFormData = (e: FormEvent): FormDataMatrix | null => {
-	if (!e?.currentTarget) return null;
-	const formData = new FormData(e?.currentTarget);
-	return [...formData.entries()];
-};
-
-const getValidatorKeys = (validators: ValidatorType): Array<string> => {
-	return Object.keys(validators);
-};
+	O.chain(v => O.fromNullable(Object.keys(v))),
+	O.fold(() => [], (res) => res),
+);
 
 const hasAllRequiredBeenFilled = (formData: FormDataMatrix) =>
 	(keys: Array<string>) =>
@@ -66,7 +50,7 @@ const errorsOnRequiredFields = (validators: ValidatorType, formData: FormDataMat
 	console.log('errors2 parameters', { validators, formData });
 
 	return pipe(formData,
-		A.filter(isFieldRequired(validatorKeys)),
+		filter(isFieldRequired(validatorKeys)),
 		O.fromNullable,
 		O.fold(
 			() => [],

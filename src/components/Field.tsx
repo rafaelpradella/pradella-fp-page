@@ -1,15 +1,12 @@
-import {
-	SyntheticEvent,
-	useState,
-	createContext,
-	useContext,
-} from "react";
-import { pipe } from "fp-ts/lib/function";
+import { reduce } from "fp-ts/Array";
 import * as E from "fp-ts/lib/Either";
-import * as A from "fp-ts/lib/Array";
+import { pipe } from "fp-ts/lib/function";
+import {
+	createContext, SyntheticEvent, useContext, useState
+} from "react";
 
-import styles from '~/styles/field.module.scss';
 import { ErrorsList } from '~/helpers/validators';
+import styles from '~/styles/field.module.scss';
 
 type InputValue = string | boolean | null;
 type ValidationEither = E.Either<ErrorsList, string[]>;
@@ -48,7 +45,7 @@ export const Field: React.FC<Props> = ({ fieldId, label, isRequired = false, ...
 	const ErrorStringAnnouncer = ({ errors }: { errors: ValidationEither }) =>
 		pipe(errors,
 			E.fold(
-				A.reduce('', formatErrorString),
+				reduce('', formatErrorString),
 				() => '',
 			),
 			(str) => {
