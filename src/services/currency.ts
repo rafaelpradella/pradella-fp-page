@@ -5,6 +5,7 @@ import * as TE from 'fp-ts/TaskEither';
 import * as A from 'fp-ts/Array';
 
 import fixerClient from './fixer.client';
+import { Separated } from 'fp-ts/lib/Separated';
 //import CURRENCY_MOCK from './currency.mock';
 
 export type CurrencyResponse = { currencies: CurrencyData, success: boolean };
@@ -47,7 +48,7 @@ const isTopCurrency = (key: string[]) => {
   });
 };
 
-const listByRelevanceTier = (currencies: E.Either<Error, CurrencyMatrix>) => 
+const listByRelevanceTier = (currencies: E.Either<Error, CurrencyMatrix>): E.Either<Error, Separated<CurrencyMatrix, CurrencyMatrix>> => 
   pipe(
     currencies,
     E.map((currencies) => A.partition(isTopCurrency)(currencies)),
