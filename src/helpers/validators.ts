@@ -49,7 +49,7 @@ const oneNumber = (s: string) => pipe(s,
 const formatToErrorObject = <E, A>(fieldId: string) => (errorList: E.Either<E, A>) =>
 	pipe(errorList,
 		E.mapLeft((errors) =>
-			map(err => ({ fieldId, message: err }))
+			map((err) => ({ fieldId, message: err }))(errors),
 		)
 	);
 
