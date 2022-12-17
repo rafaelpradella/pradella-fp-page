@@ -51,7 +51,7 @@ const isTopCurrency = (key: string[]) => {
 const listByRelevanceTier = (currencies: E.Either<Error, CurrencyMatrix>): E.Either<Error, Separated<CurrencyMatrix, CurrencyMatrix>> => 
   pipe(
     currencies,
-    E.map((currencies) => A.partition(isTopCurrency)(currencies)),
+    E.map(partition(isTopCurrency)),
   );
 
 const fetchCurrenciesList = async() => {
