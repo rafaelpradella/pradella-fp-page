@@ -1,11 +1,12 @@
 import { reduce } from "fp-ts/Array";
-import * as E from "fp-ts/lib/Either";
-import { pipe } from "fp-ts/lib/function";
+import * as E from "fp-ts/Either";
+import { pipe } from "fp-ts/function";
+import { fromPredicate, map, getOrElse } from "fp-ts/Option";
 import {
 	createContext, SyntheticEvent, useContext, useState
 } from "react";
 
-import { ErrorsList } from '~/helpers/validators';
+import { ErrorsList, ERROR_MSG } from '~/helpers/validators';
 import styles from '~/styles/field.module.scss';
 
 type InputValue = string | boolean | null;
@@ -27,8 +28,13 @@ export const Field: React.FC<Props> = ({ fieldId, label, isRequired = false, ...
 	const [data, setData] = useState<InputValue>(null);
 
 	const shouldValidateUser = isRequired && !!validators[fieldId];
-	const validationErrors: ValidationEither = validators[fieldId]?.(data);
 	const shouldShowFeedback = shouldValidateUser && hasInteracted;
+	
+	const validationErrors: ValidationEither = pipe(data,
+		fromPredicate((d) => !!d),
+		map(d => validators[fieldId]?.(d)),
+		getOrElse(() => E.left([{ fieldId, message: ERROR_MSG.NO_CONTENT }])),
+	)
 
 	const setNewValue = (e: SyntheticEvent<HTMLInputElement>) => {
 		const isCheckbox = e.currentTarget.getAttribute('type') === 'checkbox';

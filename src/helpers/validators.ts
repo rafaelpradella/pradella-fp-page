@@ -11,7 +11,7 @@ Tester();
 
 export type ErrorsList = Array<{ fieldId: string, message: string }>;
 const MIN_LENGTH = 6;
-const ERROR_MSG = {
+export const ERROR_MSG = {
 	NO_CONTENT: 'Fill the field',
 	LENGTH: 'At least 6 characters',
 	CAPITAL_LETTER: 'Include 1 capital letter',
