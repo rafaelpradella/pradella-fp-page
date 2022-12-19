@@ -10,7 +10,8 @@
     "test": "jest",
     "storybook": "start-storybook -p 6006",
     "test-storybook": "test-storybook",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "chromatic": "npx chromatic"
   },
   "dependencies": {
     "@devexperts/remote-data-ts": "^2.1.1",
@@ -53,6 +54,7 @@
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
     "babel-loader": "^8.3.0",
+    "chromatic": "^6.14.0",
     "eslint": "8.25.0",
     "eslint-config-next": "12.3.1",
     "eslint-plugin-storybook": "^0.6.7",
@@ -67,5 +69,7 @@
   },
   "msw": {
     "workerDirectory": "public"
-  }
+  },
+  "readme": "ERROR: No README data found!",
+  "_id": "pradella-fp-page@0.1.0"
 }
