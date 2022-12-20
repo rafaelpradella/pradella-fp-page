@@ -11,7 +11,7 @@
     "storybook": "start-storybook -p 6006",
     "test-storybook": "test-storybook",
     "build-storybook": "build-storybook",
-    "chromatic": "npx chromatic"
+    "chromatic": "npx chromatic --exit-zero-on-changes"
   },
   "dependencies": {
     "@devexperts/remote-data-ts": "^2.1.1",
