@@ -2,11 +2,11 @@ import axios, { AxiosResponse } from 'axios';
 import { pipe } from 'fp-ts/lib/function';
 import * as E from 'fp-ts/Either';
 import * as TE from 'fp-ts/TaskEither';
-import * as A from 'fp-ts/Array';
+import { partition } from 'fp-ts/Array';
 
 import fixerClient from './fixer.client';
 import { Separated } from 'fp-ts/lib/Separated';
-//import CURRENCY_MOCK from './currency.mock';
+import CURRENCY_MOCK from '@mocks/currency.mock';
 
 export type CurrencyResponse = { currencies: CurrencyData, success: boolean };
 export type CurrencyData = { [key: string] : string };
