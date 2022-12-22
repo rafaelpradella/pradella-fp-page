@@ -1,58 +1,62 @@
-import type { AppProps } from 'next/app'
+import React, { useState } from 'react';
+import * as RD from '@devexperts/remote-data-ts';
+import { pipe } from 'fp-ts/lib/function';
 
-import CurrencyService from 'services/currency';
-import Layout from 'components/Layout'
-import styles from 'styles/Home.module.scss'
-import * as E from 'fp-ts/lib/Either';
-import React from 'react';
+import { USDRatioFromOption, RDRatioResponse, PageProps } from '~/controllers/CurrencyController';
+import type { CurrencyMatrix } from '~/services/currency';
+import { Layout } from '~/components/Layout'
+import styles from '~/styles/Home.module.scss'
 
-export async function getStaticProps() {
-	const currencyRes = await CurrencyService.fetchCurrenciesListByRelevance();
+export { getStaticProps } from '~/controllers/CurrencyController';
 
-	console.log('STATIC_PROPS_DATA', currencyRes);
+const CurrencyConverter: React.FC<PageProps> = ({ topCurrencies, otherCurrencies, error }) => {
+	const [selectedSymbol, setSelectedSymbol] = useState<RDRatioResponse>(RD.initial);
+	console.log('StaticProps: 💵 Currency Converter => ', { topCurrencies, otherCurrencies, error });
 
-	return {
-	  props: {
-			error: E.isLeft(currencyRes) ? currencyRes?.left.message : null,
-			otherCurrencies: E.isRight(currencyRes) ? currencyRes?.right?.left : null,
-			topCurrencies: E.isRight(currencyRes) ? currencyRes?.right?.right : null,
-	  },
-	}
-}
+	const OptionsSection = ({ title, currencies }: { title: string, currencies: CurrencyMatrix | null }) => {
+		if (!currencies?.length) return null;
 
-export default function CurrencyConverter({ topCurrencies, otherCurrencies, error }: AppProps) {
-
-	console.log('TOP PROP', topCurrencies);
-	console.log('OTHERS PROP', otherCurrencies);
-	console.log('ERROR PROP', error);
-	
-	const generateOptions = (currencies: Array<[string, string]>, optgroup?: string) => {
-		if(!currencies?.length) return null;
-		
-		const OptWrapper = ({children}: { children: React.ReactNode[]}) =>
-			optgroup
-				? (<optgroup label={optgroup}>{children}</optgroup>)
+		const OptWrapper = ({ children }: { children: React.ReactNode[] }) =>
+			title
+				? (<optgroup label={title}>{children}</optgroup>)
 				: (<>{children}</>)
 
 		return (
-				<OptWrapper>
-					{ currencies.map((currency, i) => (
-						<option value={currency[0]} key={i}>
-							{`${currency[0]} - ${currency[1]}`}
-						</option>
-					))}
-				</OptWrapper>
-	)};
+			<OptWrapper>
+				{currencies.map((currency, i) => (
+					<option value={currency[0]} key={i}>
+						{`${currency[0]} - ${currency[1]}`}
+					</option>
+				))}
+			</OptWrapper>
+		)
+	};
 
 	const CurrencySelector = () => {
 		return (
-			<select>
-				<option disabled selected value=''> -- Select a currency -- </option>
-				{generateOptions(topCurrencies, 'Most exchanged')}
-				{generateOptions(otherCurrencies, 'A-Z')}
+			<select
+				onChange={(ev) => USDRatioFromOption(ev?.target?.value, setSelectedSymbol)}
+			>
+				<option disabled selected>-- Select a currency -- </option>
+				<OptionsSection title='Most exchanged' currencies={topCurrencies} />
+				<OptionsSection title='A-Z' currencies={otherCurrencies} />
 			</select>
 		)
 	};
+
+	const FeedbackInfo = () => pipe(selectedSymbol,
+		RD.fold(
+			() => (<span>Waiting your input 🥺</span>),
+			() => (<span>🇺🇸 → → please wait  → → 🌍</span>),
+			(err) => (<span>{`Error caused by: ${err}`}</span>),
+			(res) => (
+				<>
+					<span>{`USD → ${res.currency} ratio is: ${res.ratio}`}</span>
+					<code>{JSON.stringify(selectedSymbol)}</code>
+				</>
+			),
+		)
+	);
 
 	return (
 		<Layout>
@@ -60,8 +64,17 @@ export default function CurrencyConverter({ topCurrencies, otherCurrencies, erro
 				Simulate currency conversions
 			</h1>
 			<fieldset>
-				{ error ? 'Something went wrong 😭' : (<CurrencySelector />) }
+				{error ? 'Something went wrong 😭' : (<CurrencySelector />)}
 			</fieldset>
+			<div
+				className={styles.response}
+				aria-live='polite'
+				role='status'
+			>
+				{error ? null : (<FeedbackInfo />)}
+			</div>
 		</Layout>
 	)
 }
+
+export default CurrencyConverter;
