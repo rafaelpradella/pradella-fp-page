@@ -24,11 +24,11 @@ const FormResponseCodec = sparseType({
 })
 
 export function Tester() {
-  console.log('coded reporter',
+  /*console.log('coded reporter',
     PathReporter.report(FormResponseCodec.decode(
       { name: 'All', password: 'asdfg!', isSigned: true }
     ))
-  )
+  )*/
 };
 
 

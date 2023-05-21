@@ -8,6 +8,7 @@
   min-width: 420px;
 
   input {
+    display: block;
     &:not([type='checkbox']) {
       background-color: rgba(255, 255, 255, .2);
       box-shadow: var(--shadow-5);
@@ -37,6 +38,8 @@
 .inputWrap {
   position: relative;
   width: stretch;
+  max-width: 520px;
+  display: block;
 }
 
 .warnSign {

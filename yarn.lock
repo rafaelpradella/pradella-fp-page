@@ -1626,6 +1626,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@builder.io/partytown@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "@builder.io/partytown@npm:0.8.0"
+  bin:
+    partytown: bin/partytown.cjs
+  checksum: 98f38806afad78d3a8b1ff9610462cdfcc0b31d5e039bc77617bc33d15debe63a803669da36d9e0d98e693f6f7cc5fef1b0f3d0fd11f45ca1c0b3bc8fdf75a22
+  languageName: node
+  linkType: hard
+
 "@cnakazawa/watch@npm:^1.0.3":
   version: 1.0.4
   resolution: "@cnakazawa/watch@npm:1.0.4"
@@ -16007,6 +16016,7 @@ __metadata:
   resolution: "pradella-fp-page@workspace:."
   dependencies:
     "@babel/core": ^7.20.5
+    "@builder.io/partytown": ^0.8.0
     "@devexperts/remote-data-ts": ^2.1.1
     "@mdx-js/react": ^1.6.22
     "@storybook/addon-actions": ^6.5.13
